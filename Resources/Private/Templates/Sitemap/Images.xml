@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+>
+    <f:spaceless>
+        <f:for each="{items}" as="item">
+            <url>
+                <loc><f:format.htmlentities>{item.uri}</f:format.htmlentities></loc>
+                <lastmod><f:format.date date="now" format="c" /></lastmod>
+                <f:for each="{item.images}" as="image">
+                    <image:image>
+                        <image:loc>{image.publicUrl}</image:loc>
+                        <f:if condition="{image.title}">
+                            <image:title>{image.title}</image:title>
+                        </f:if>
+                        <f:if condition="{image.description}">
+                            <image:caption>{image.description}</image:caption>
+                        </f:if>
+                    </image:image>
+                </f:for>
+            </url>
+        </f:for>
+    </f:spaceless>
+</urlset>

@@ -1,0 +1,16 @@
+#
+# Main TypoScript constants
+#
+
+plugin.tx_nrimagesitemap {
+    view {
+        # cat=plugin.tx_nrimagesitemap/file; type=string; label=Path to template layouts (FE)
+        layoutRootPath = EXT:nr_image_sitemap/Resources/Private/Layouts/
+
+        # cat=plugin.tx_nrimagesitemap/file; type=string; label=Path to template root (FE)
+        templateRootPath = EXT:nr_image_sitemap/Resources/Private/Templates/
+
+        # cat=plugin.tx_nrimagesitemap/file; type=string; label=Path to template partials (FE)
+        partialRootPath = EXT:nr_image_sitemap/Resources/Private/Partials/
+    }
+}

@@ -1,0 +1,60 @@
+#
+# Main TypoScript setup
+#
+
+plugin.tx_nrimagesitemap {
+    view {
+        layoutRootPaths {
+            10 = EXT:nr_image_sitemap/Resources/Private/Layouts/
+            20 = {$plugin.tx_nrimagesitemap.view.layoutRootPath}
+        }
+
+        templateRootPaths {
+            10 = EXT:nr_image_sitemap/Resources/Private/Templates/
+            20 = {$plugin.tx_nrimagesitemap.view.templateRootPath}
+        }
+
+        partialRootPaths {
+            10 = EXT:nr_image_sitemap/Resources/Private/Partials/
+            20 = {$plugin.tx_nrimagesitemap.view.partialRootPath}
+        }
+    }
+}
+
+plugin.tx_seo {
+    config {
+        # Add new site map type
+        xmlImagesSitemap {
+            sitemaps {
+                images {
+                    provider = Netresearch\NrImageSitemap\Seo\ImagesXmlSitemapDataProvider
+                    config {
+                        template = Sitemap/Images
+                    }
+                }
+            }
+        }
+    }
+
+    # We need to add out path configuration to the cms-seo extension as value in order
+    # to get the right template loaded
+    view {
+        layoutRootPaths {
+            1642072014 = EXT:nr_image_sitemap/Resources/Private/Layouts/
+        }
+
+        templateRootPaths {
+            1642072014 = EXT:nr_image_sitemap/Resources/Private/Templates/
+        }
+
+        partialRootPaths {
+            1642072014 = EXT:nr_image_sitemap/Resources/Private/Partials/
+        }
+    }
+}
+
+seo_sitemap_images < seo_sitemap
+seo_sitemap_images {
+    typeNum = 1642072014
+    10.sitemapType = xmlImagesSitemap
+}
