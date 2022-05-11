@@ -13,4 +13,17 @@ plugin.tx_nrimagesitemap {
         # cat=plugin.tx_nrimagesitemap/file; type=string; label=Path to template partials (FE)
         partialRootPath = EXT:nr_image_sitemap/Resources/Private/Partials/
     }
+
+    settings {
+        xmlImagesSitemap {
+            # cat=plugin.tx_nrimagesitemap/xmlImagesSitemap; type=int; label=The root page ID
+            rootPage = 1
+            # cat=plugin.tx_nrimagesitemap/xmlImagesSitemap; type=string; label=Tables to include
+            tables = pages, tt_content
+            # cat=plugin.tx_nrimagesitemap/xmlImagesSitemap; type=string; label=Doktypes to exclude
+            excludedDoktypes = 3, 4, 6, 7, 199, 254, 255
+            # cat=plugin.tx_nrimagesitemap/xmlImagesSitemap; type=string; label=Additional where clause
+            additionalWhere = no_index = 0 AND canonical_link = ''
+        }
+    }
 }

@@ -22,9 +22,8 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Seo\XmlSitemap\AbstractXmlSitemapDataProvider;
-
+use TYPO3\CMS\Seo\XmlSitemap\Exception\MissingConfigurationException;
 use function count;
-use function in_array;
 
 /**
  * Generate sitemap for images.
@@ -35,11 +34,6 @@ use function in_array;
  */
 class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
 {
-    private const DEFAULT_TABLES = [
-        'tt_content',
-        'pages',
-    ];
-
     /**
      * @var ImageFileReferenceRepository
      */
@@ -57,6 +51,10 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
      * @param string                     $key
      * @param array                      $config
      * @param ContentObjectRenderer|null $cObj
+     *
+     * @throws Exception
+     * @throws InvalidQueryException
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
     public function __construct(
         ServerRequestInterface $request,
@@ -78,27 +76,55 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
 
     /**
      * @throws \Doctrine\DBAL\Driver\Exception
-     * @throws Exception
      * @throws InvalidQueryException
+     * @throws Exception
+     * @throws MissingConfigurationException
      */
     public function generateItems(): void
     {
+        $tables = GeneralUtility::trimExplode(',', $this->config['tables']);
+
+        if (empty($tables)) {
+            throw new MissingConfigurationException(
+                'No configuration found for sitemap ' . $this->getKey(),
+                1652249698
+            );
+        }
+
+        $excludedDoktypes = [];
+        if (!empty($this->config['excludedDoktypes'])) {
+            $excludedDoktypes = GeneralUtility::intExplode(',', $this->config['excludedDoktypes']);
+        }
+
+        $additionalWhere = '';
+        if (!empty($this->config['additionalWhere'])) {
+            $additionalWhere = $this->config['additionalWhere'];
+        }
+
+        if (!empty($this->config['rootPage'])) {
+            $rootPageId = (int) $this->config['rootPage'];
+        } else {
+            $rootPageId = $this->request->getAttribute('site')->getRootPageId();
+        }
+
+        $treeList      = $this->cObj->getTreeList(-$rootPageId, 99);
+        $treeListArray = GeneralUtility::intExplode(',', $treeList);
+
         /** @var ImageFileReference[] $images */
-        $images = $this->imageFileReferenceRepository->findAllByType(
+        $images = $this->imageFileReferenceRepository->findAllImages(
             [
                 AbstractFile::FILETYPE_IMAGE,
-            ]
+            ],
+            $treeListArray,
+            $tables,
+            $excludedDoktypes,
+            $additionalWhere
         );
 
         $items = [];
 
         if ($images && count($images)) {
             foreach ($images as $image) {
-                // Ignore all table other than default ones
-                if (!in_array($image->getTablenames(), self::DEFAULT_TABLES)) {
-                    continue;
-                }
-
                 $frontendUri = $this->uriBuilder
                     ->reset()
                     ->setCreateAbsoluteUri(true)
