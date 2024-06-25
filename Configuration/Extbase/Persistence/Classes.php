@@ -9,9 +9,11 @@
 
 declare(strict_types=1);
 
+use Netresearch\NrImageSitemap\Domain\Model\ImageFileReference;
+
 // Defines the mapping of the table record to a domain model class
 return [
-    \Netresearch\NrImageSitemap\Domain\Model\ImageFileReference::class => [
+    ImageFileReference::class => [
         'tableName' => 'sys_file_reference',
     ],
 ];
