@@ -1,0 +1,17 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  TYPO3\CMS\Seo\:
+    resource: '../Classes/*'
+
+  TYPO3\CMS\Seo\HrefLang\HrefLangGenerator:
+    tags:
+      - name: event.listener
+        identifier: 'typo3-seo/hreflangGenerator'
+
+  TYPO3\CMS\Seo\XmlSitemap\XmlSitemapRenderer:
+    shared: false
+    public: true

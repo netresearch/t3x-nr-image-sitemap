@@ -14,10 +14,9 @@
     "typo3/cms-core": "^11.5.0",
     "typo3/cms-seo": "^11.5.0"
   },
-  "replace": {
-    "nr-image-sitemap": "self.version",
-    "typo3-ter/nr-image-sitemap": "self.version"
-  },
+  "require-dev": {
+    "ssch/typo3-rector": "^1.5"
+  },	
   "extra": {
     "typo3/cms": {
       "extension-key": "nr_image_sitemap"
@@ -26,6 +25,12 @@
   "autoload": {
     "psr-4": {
       "Netresearch\\NrImageSitemap\\": "Classes"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "typo3/class-alias-loader": true,
+      "typo3/cms-composer-installers": true
     }
   }
 }

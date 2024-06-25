@@ -1,0 +1,92 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  TYPO3\CMS\Extbase\:
+    resource: '../Classes/*'
+
+  TYPO3\CMS\Extbase\Core\Bootstrap:
+    public: true
+    shared: false
+
+  # @deprecated since v11, will be removed in v12
+  TYPO3\CMS\Extbase\Object\ObjectManagerInterface:
+    alias: TYPO3\CMS\Extbase\Object\ObjectManager
+
+  # formerly in EXT:extbase/ext_localconf.php
+  TYPO3\CMS\Extbase\Persistence\QueryInterface:
+    alias: TYPO3\CMS\Extbase\Persistence\Generic\Query
+    public: true
+  TYPO3\CMS\Extbase\Persistence\QueryResultInterface:
+    alias: TYPO3\CMS\Extbase\Persistence\Generic\QueryResult
+    public: true
+  TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface:
+    alias: TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager
+    public: true
+  TYPO3\CMS\Extbase\Persistence\Generic\Storage\BackendInterface:
+    alias: TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbBackend
+  TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface:
+    alias: TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings
+    public: true
+  TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface:
+    alias: TYPO3\CMS\Extbase\Configuration\ConfigurationManager
+    public: true
+
+  TYPO3\CMS\Extbase\Persistence\Generic\Query:
+    public: true
+    shared: false
+
+  TYPO3\CMS\Extbase\Persistence\Generic\QueryResult:
+    public: true
+    shared: false
+
+  TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser:
+    public: true
+    shared: false
+
+  TYPO3\CMS\Extbase\Persistence\Generic\Typo3QuerySettings:
+    public: true
+    shared: false
+
+  TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper:
+    public: true
+    shared: false
+
+  cache.extbase:
+    class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
+    factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
+    arguments: ['extbase']
+
+  # @deprecated since v11, will be removed in v12
+  TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext:
+    public: true
+    shared: false
+
+  TYPO3\CMS\Extbase\Mvc\View\GenericViewResolver: ~
+  TYPO3\CMS\Extbase\Mvc\View\ViewResolverInterface: '@TYPO3\CMS\Extbase\Mvc\View\GenericViewResolver'
+
+  TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder:
+    public: true
+    shared: false
+
+  TYPO3\CMS\Extbase\Persistence\ClassesConfiguration:
+    factory: ['@TYPO3\CMS\Extbase\Persistence\ClassesConfigurationFactory', 'createClassesConfiguration']
+
+  TYPO3\CMS\Extbase\Persistence\ClassesConfigurationFactory:
+    arguments:
+      $cache: '@cache.extbase'
+      $cacheIdentifier: '@=service("TYPO3\\CMS\\Core\\Package\\Cache\\PackageDependentCacheIdentifier").withPrefix("PersistenceClasses").toString()'
+
+  TYPO3\CMS\Extbase\Configuration\RequestHandlersConfigurationFactory:
+    arguments:
+      $cache: '@cache.extbase'
+      $cacheIdentifier: '@=service("TYPO3\\CMS\\Core\\Package\\Cache\\PackageDependentCacheIdentifier").withPrefix("RequestHandlers").toString()'
+
+  TYPO3\CMS\Extbase\Configuration\RequestHandlersConfiguration:
+      factory: ['@TYPO3\CMS\Extbase\Configuration\RequestHandlersConfigurationFactory', 'createRequestHandlersConfiguration']
+
+  TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapFactory:
+    arguments:
+      $baseCacheIdentifier: '@=service("TYPO3\\CMS\\Core\\Package\\Cache\\PackageDependentCacheIdentifier").toString()'
