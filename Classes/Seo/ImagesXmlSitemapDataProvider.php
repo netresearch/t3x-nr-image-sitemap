@@ -37,12 +37,12 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
     /**
      * @var ImageFileReferenceRepository
      */
-    private ImageFileReferenceRepository $imageFileReferenceRepository;
+    private readonly ImageFileReferenceRepository $imageFileReferenceRepository;
 
     /**
      * @var UriBuilder
      */
-    private UriBuilder $uriBuilder;
+    private readonly UriBuilder $uriBuilder;
 
     /**
      * Constructor.
@@ -87,7 +87,7 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
         if (empty($tables)) {
             throw new MissingConfigurationException(
                 'No configuration found for sitemap ' . $this->getKey(),
-                1652249698
+                1_652_249_698
             );
         }
 

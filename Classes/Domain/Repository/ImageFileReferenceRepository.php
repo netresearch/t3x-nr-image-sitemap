@@ -35,12 +35,12 @@ class ImageFileReferenceRepository extends Repository
     /**
      * @var ConnectionPool
      */
-    private ConnectionPool $connectionPool;
+    private readonly ConnectionPool $connectionPool;
 
     /**
      * @var Context
      */
-    private Context $context;
+    private readonly Context $context;
 
     /**
      * Constructor.
@@ -263,7 +263,7 @@ class ImageFileReferenceRepository extends Repository
     {
         try {
             return $this->context->getPropertyFromAspect('language', 'id');
-        } catch (AspectNotFoundException $exception) {
+        } catch (AspectNotFoundException) {
             return 0;
         }
     }

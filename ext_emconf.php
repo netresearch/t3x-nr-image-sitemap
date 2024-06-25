@@ -17,8 +17,8 @@ $EM_CONF[$_EXTKEY] = [
     'category'         => 'plugin',
     'constraints'      => [
         'depends'   => [
-            'typo3' => '10.4.0-',
-            'seo'   => '10.4.0-',
+            'typo3' => '11.5.0-',
+            'seo'   => '11.5.0-',
         ],
         'conflicts' => [
         ],
@@ -31,9 +31,6 @@ $EM_CONF[$_EXTKEY] = [
         ],
     ],
     'state'            => 'stable',
-    'uploadfolder'     => false,
-    'createDirs'       => '',
-    'clearCacheOnLoad' => true,
     'author'           => 'Rico Sonntag',
     'author_email'     => 'rico.sonntag@netresearch.de',
     'author_company'   => 'Netresearch DTT GmbH',
