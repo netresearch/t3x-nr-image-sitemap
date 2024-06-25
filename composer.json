@@ -11,15 +11,12 @@
         }
     ],
     "require": {
-        "typo3/cms-core": "^10.4.0",
-        "typo3/cms-seo": "^10.4.0"
+        "typo3/cms-core": "^11.5.0",
+        "typo3/cms-seo": "^11.5.0"
     },
     "extra": {
         "typo3/cms": {
             "extension-key": "nr_image_sitemap"
-        },
-        "branch-alias": {
-            "dev-main": "10.1.x-dev"
         }
     },
     "autoload": {
