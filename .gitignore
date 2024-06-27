@@ -1,0 +1,26 @@
+# PHPStorm
+.idea
+
+# OSX
+.DS_Store
+
+# Composer
+vendor/
+bin/
+logs/
+composer.lock
+
+# Build stuff
+.build/
+
+# PHPUnit
+phpunit-report.xml
+coverage/
+
+# Cache
+.php-cs-fixer.cache
+.phplint.cache
+.phpunit.result.cache
+nrc_flightplan_*.zip
+
+/Resources/chem_files
