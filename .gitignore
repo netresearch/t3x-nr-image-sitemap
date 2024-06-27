@@ -21,6 +21,5 @@ coverage/
 .php-cs-fixer.cache
 .phplint.cache
 .phpunit.result.cache
-nrc_flightplan_*.zip
 
 /Resources/chem_files
