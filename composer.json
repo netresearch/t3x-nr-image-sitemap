@@ -27,7 +27,7 @@
     "phpstan/phpstan": "^1.10",
     "phpstan/phpstan-strict-rules": "^1.5",
     "phpstan/phpstan-deprecation-rules": "^1.1",
-    "ssch/typo3-rector": "^2.0"
+    "ssch/typo3-rector": "^1.5"
   },	
   "extra": {
     "typo3/cms": {
