@@ -36,7 +36,7 @@ return static function (RectorConfig $rectorConfig): void {
         'ext_*.sql',
     ]);
 
-    $rectorConfig->phpstanConfig('Build/phpstan.neon');
+    $rectorConfig->phpstanConfig('phpstan.neon');
     $rectorConfig->importNames();
     $rectorConfig->removeUnusedImports();
     $rectorConfig->disableParallel();
