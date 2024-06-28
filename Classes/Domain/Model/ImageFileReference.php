@@ -45,7 +45,7 @@ class ImageFileReference extends FileReference
      */
     public function getTitle(): ?string
     {
-        if ($this->title) {
+        if ($this->title !== '' && $this->title !== '0') {
             return $this->title;
         }
 
@@ -63,7 +63,7 @@ class ImageFileReference extends FileReference
      */
     public function getDescription(): ?string
     {
-        if ($this->description) {
+        if ($this->description !== '' && $this->description !== '0') {
             return $this->description;
         }
 

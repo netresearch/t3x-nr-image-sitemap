@@ -99,7 +99,7 @@ class ImageFileReferenceRepository extends Repository
         // Remove duplicates
         $existingRecords = array_unique($existingRecords);
 
-        if (empty($existingRecords)) {
+        if ($existingRecords === []) {
             return null;
         }
 
@@ -134,8 +134,7 @@ class ImageFileReferenceRepository extends Repository
         $connection = $this->connectionPool->getConnectionForTable('sys_file_reference');
 
         $queryBuilder = $connection->createQueryBuilder();
-        $queryBuilder
-            ->select('r.uid', 'r.uid_foreign', 'r.tablenames')
+        $queryBuilder->select('r.uid', 'r.uid_foreign', 'r.tablenames')
             ->from('sys_file_reference', 'r')
             ->leftJoin(
                 'r',
@@ -195,7 +194,7 @@ class ImageFileReferenceRepository extends Repository
                 )
             );
 
-        if (!empty($excludedDoktypes)) {
+        if ($excludedDoktypes !== []) {
             $queryBuilder->andWhere(
                 $queryBuilder->expr()->notIn(
                     'p.doktype',
@@ -207,7 +206,7 @@ class ImageFileReferenceRepository extends Repository
             );
         }
 
-        if (!empty($additionalWhere)) {
+        if ($additionalWhere !== '') {
             $queryBuilder->andWhere(
                 QueryHelper::stripLogicalOperatorPrefix($additionalWhere)
             );
