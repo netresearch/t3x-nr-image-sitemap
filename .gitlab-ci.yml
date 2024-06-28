@@ -6,12 +6,12 @@ stages:
     parallel:
         matrix:
             -   TYPO3: [ '^11.5' ]
-                PHP: [ '81' ]
+                IMG_TAG: [ 'latest' ]
 
 .php:
     extends: .parallel-hidden-job
     image:
-        name: registry.netresearch.de/support/typo3-11/build:$PHP
+        name: registry.netresearch.de/support/typo3-11/build:${IMG_TAG}
         entrypoint: [ '/bin/bash', '-c' ]
 
 composer:
@@ -22,9 +22,9 @@ composer:
         COMPOSER_AUTH: ""
     script:
         # Install all project dependencies
-        - echo "Install dependencies with typo3/cms-core:$TYPO3"
+        - echo "Install dependencies with typo3/cms-core:${TYPO3}"
         - php --version
-        - composer config -g gitlab-oauth.git.netresearch.de $GITLAB_ACCESS_TOKEN
+        - composer config -g gitlab-oauth.git.netresearch.de ${GITLAB_ACCESS_TOKEN}
         - composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
     artifacts:
         paths:
