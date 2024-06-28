@@ -134,7 +134,7 @@ class ImageFileReferenceRepository extends Repository
         $connection = $this->connectionPool->getConnectionForTable('sys_file_reference');
 
         $queryBuilder = $connection->createQueryBuilder();
-        $queryBuilder->select('r.uid', 'r.uid_foreign', 'r.tablenames')
+        $queryBuilder->select(['r.uid', 'r.uid_foreign', 'r.tablenames'])
             ->from('sys_file_reference', 'r')
             ->leftJoin(
                 'r',
