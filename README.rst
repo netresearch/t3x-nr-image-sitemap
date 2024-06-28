@@ -18,3 +18,4 @@ Opening `https://<YOUR-DOMAIN>/?type=1642072014` returns the generated sitemap.
 
 Call `https://<YOUR-DOMAIN>/?type=1533906435` to integrate the sitemap within the sitemap created by the
 cms-seo extension.
+
