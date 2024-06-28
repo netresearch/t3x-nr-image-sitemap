@@ -19,7 +19,7 @@ composer:
     extends:
         - .php
     variables:
-        COMPOSER_AUTH: |
+        - COMPOSER_AUTH
     script:
         # Install all project dependencies
         - echo "Install dependencies with typo3/cms-core:$TYPO3"
