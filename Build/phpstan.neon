@@ -17,14 +17,10 @@ parameters:
     excludePaths:
         - %currentWorkingDirectory%/.build/*
         - %currentWorkingDirectory%/ext_emconf.php
-        - %currentWorkingDirectory%/vendor/*
-        - %currentWorkingDirectory%/public/*
-        - %currentWorkingDirectory%/ext_emconf.php
-        - %currentWorkingDirectory%/rector.php
 
 
     checkGenericClassInNonGenericObjectType: false
     treatPhpDocTypesAsCertain: false
 
-    #ignoreErrors:
-    #    - identifier: missingType.generics
+    ignoreErrors:
+
