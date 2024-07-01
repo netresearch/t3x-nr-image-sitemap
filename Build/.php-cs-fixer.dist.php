@@ -91,6 +91,8 @@ return (new PhpCsFixer\Config())
             ->exclude('config')
             ->exclude('node_modules')
             ->exclude('var')
+            ->exclude('vendor')
+            ->exclude('public')
             ->in(__DIR__ . '/../')
     );
 
