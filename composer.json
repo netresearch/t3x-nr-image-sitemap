@@ -57,7 +57,7 @@
           "phplint --configuration Build/.phplint.yml"
       ],
       "ci:test:php:phpstan": [
-          "phpstan analyze --configuration Build/phpstan.neon -c ./phpstan.neon > phpstan-report.xml"
+          "phpstan analyze --configuration Build/phpstan.neon -c Build/phpstan.neon > phpstan-report.xml"
       ],
       "ci:test:php:phpstan:baseline": [
           "phpstan analyze --configuration Build/phpstan.neon --generate-baseline Build/phpstan-baseline.neon --allow-empty-baseline"
