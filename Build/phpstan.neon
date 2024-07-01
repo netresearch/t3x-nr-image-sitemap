@@ -6,7 +6,6 @@ parameters:
         - %currentWorkingDirectory%/Classes/
         - %currentWorkingDirectory%/Configuration/
         - %currentWorkingDirectory%/Resources/
-        - %currentWorkingDirectory%/ext_localconf.php
 
     excludePaths:
         - %currentWorkingDirectory%/.build/*
