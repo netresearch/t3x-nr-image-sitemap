@@ -1,6 +1,7 @@
 <?php
+
 /**
- * This file is part of the package netresearch/nr_image_sitemap.
+ * This file is part of the package netresearch/nr-image-sitemap.
  *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
@@ -22,7 +23,6 @@ use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
 use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector;
 use Ssch\TYPO3Rector\Set\Typo3LevelSetList;
 
-
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->paths([
         __DIR__ . '/../Classes',
@@ -41,19 +41,17 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->removeUnusedImports();
     $rectorConfig->disableParallel();
 
-
-
     // define sets of rules
-       $rectorConfig->sets([
-           SetList::EARLY_RETURN,
-           SetList::TYPE_DECLARATION,
-           SetList::CODING_STYLE,
-           SetList::CODE_QUALITY,
-           // SetList::DEAD_CODE,
+    $rectorConfig->sets([
+        SetList::EARLY_RETURN,
+        SetList::TYPE_DECLARATION,
+        SetList::CODING_STYLE,
+        SetList::CODE_QUALITY,
+        // SetList::DEAD_CODE,
 
-           LevelSetList::UP_TO_PHP_81,
-           Typo3LevelSetList::UP_TO_TYPO3_11,
-       ]);
+        LevelSetList::UP_TO_PHP_81,
+        Typo3LevelSetList::UP_TO_TYPO3_11,
+    ]);
     $rectorConfig->skip([
         CatchExceptionNameMatchingTypeRector::class,
         ClassPropertyAssignToConstructorPromotionRector::class,
@@ -65,7 +63,7 @@ return static function (RectorConfig $rectorConfig): void {
         TypedPropertyFromAssignsRector::class,
         TypedPropertyFromStrictConstructorRector::class,
         InjectAnnotationRector::class,
-        \Rector\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector::class,
-#        \Rector\Php54\Rector\Array_\LongArrayToShortArrayRector::class,
+        Rector\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector::class,
+        //        \Rector\Php54\Rector\Array_\LongArrayToShortArrayRector::class,
     ]);
 };

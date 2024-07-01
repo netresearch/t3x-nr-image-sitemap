@@ -41,7 +41,7 @@ class ImageFileReference extends FileReference
     /**
      * Returns the title.
      *
-     * @return null|string
+     * @return string|null
      */
     public function getTitle(): ?string
     {
@@ -59,7 +59,7 @@ class ImageFileReference extends FileReference
     /**
      * Returns the description.
      *
-     * @return null|string
+     * @return string|null
      */
     public function getDescription(): ?string
     {
