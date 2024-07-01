@@ -2,38 +2,26 @@ stages:
     - preparation
     - testing
 
-.parallel-hidden-job:
-    parallel:
-        matrix:
-            -   TYPO3: [ '^11.5' ]
-                IMG_TAG: [ 'latest' ]
-
-.php:
-    extends: .parallel-hidden-job
-    image:
-        name: registry.netresearch.de/support/typo3-11/build:${IMG_TAG}
-        entrypoint: [ '/bin/bash', '-c' ]
-
 composer:
     stage: preparation
-    extends:
-        - .php
     variables:
-        COMPOSER_AUTH: ""
+        COMPOSER_AUTH: |
+
     script:
-        # Install all project dependencies
-        - echo "Install dependencies with typo3/cms-core:${TYPO3}"
         - php --version
-        - composer config -g gitlab-oauth.git.netresearch.de ${GITLAB_ACCESS_TOKEN}
+        - composer config -g gitlab-oauth.git.netresearch.de $GITLAB_ACCESS_TOKEN
         - composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
     artifacts:
         paths:
-            - .build/
+            - vendor/
+            - public/
         expire_in: 1 days
         when: always
     cache:
         paths:
-            - .build/
+            - vendor/
+            - public/
+
 
 phplint:
     stage: testing
@@ -46,19 +34,14 @@ phplint:
 
 phpstan:
     stage: testing
-    extends:
-        - .php
-    needs:
-        - composer
     script:
-        - composer ci:test:php:phpstan -- --memory-limit=-1 --error-format=gitlab > phpstan-report.json
+        - php --version
+        - vendor/bin/phpstan analyse --error-format=junit --no-progress -c Build/phpstan.neon > phpstan-report.xml
     artifacts:
-        paths:
-            - "phpstan-report.json"
-        expire_in: 1 days
-        when: always
         reports:
-            codequality: "./phpstan-report.json"
+            junit:
+                - phpstan-report.xml
+
 
 rector:
     stage: testing
