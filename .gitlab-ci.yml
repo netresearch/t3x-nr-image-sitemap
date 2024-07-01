@@ -51,7 +51,7 @@ phpstan:
     needs:
         - composer
     script:
-        - composer ci:test:php:phpstan -- --memory-limit=-1 Build/phpstan.neon > phpstan-report.json
+        - composer ci:test:php:phpstan -- --memory-limit=-1
     artifacts:
         paths:
             - "phpstan-report.json"
