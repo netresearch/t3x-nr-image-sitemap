@@ -57,7 +57,7 @@
           "phplint --configuration Build/.phplint.yml"
       ],
       "ci:test:php:phpstan": [
-          "phpstan analyze --configuration Build/phpstan.neon"
+          "pvendor/bin/phpstan analyse --error-format=junit --no-progress -c ./phpstan.neon > phpstan-report.xml"
       ],
       "ci:test:php:phpstan:baseline": [
           "phpstan analyze --configuration Build/phpstan.neon --generate-baseline Build/phpstan-baseline.neon --allow-empty-baseline"
