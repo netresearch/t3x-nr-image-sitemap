@@ -1,9 +1,3 @@
-includes:
-    - %currentWorkingDirectory%/.build/vendor/phpstan/phpstan-strict-rules/rules.neon
-    - %currentWorkingDirectory%/.build/vendor/phpstan/phpstan-deprecation-rules/rules.neon
-    - %currentWorkingDirectory%/.build/vendor/friendsoftypo3/phpstan-typo3/extension.neon
-#    - %currentWorkingDirectory%/Build/phpstan-baseline.neon
-
 parameters:
     # You can currently choose from 10 levels (0 is the loosest and 9 is the strictest).
     level: 6
@@ -12,7 +6,7 @@ parameters:
         - %currentWorkingDirectory%/Classes/
         - %currentWorkingDirectory%/Configuration/
         - %currentWorkingDirectory%/Resources/
-        # - %currentWorkingDirectory%/ext_localconf.php
+        - %currentWorkingDirectory%/ext_localconf.php
 
     excludePaths:
         - %currentWorkingDirectory%/.build/*
