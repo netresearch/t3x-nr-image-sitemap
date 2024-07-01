@@ -32,8 +32,8 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     $rectorConfig->skip([
-        'ext_emconf.php',
-        'ext_*.sql',
+        '../ext_emconf.php',
+        '../ext_*.sql',
     ]);
 
     $rectorConfig->phpstanConfig('Build/phpstan.neon');
