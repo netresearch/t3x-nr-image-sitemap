@@ -25,8 +25,6 @@ composer:
 
 phplint:
     stage: testing
-    extends:
-        - .php
     needs:
         - composer
     script:
@@ -45,8 +43,6 @@ phpstan:
 
 rector:
     stage: testing
-    extends:
-        - .php
     needs:
         - composer
     script:
@@ -54,8 +50,6 @@ rector:
 
 coding-style:
     stage: testing
-    extends:
-        - .php
     needs:
         - composer
     script:
