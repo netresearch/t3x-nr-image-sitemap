@@ -64,5 +64,6 @@ return static function (RectorConfig $rectorConfig): void {
         RemoveUselessVarTagRector::class,
         TypedPropertyFromAssignsRector::class,
         TypedPropertyFromStrictConstructorRector::class,
+        LongArrayToShortArrayRector::class
     ]);
 };
