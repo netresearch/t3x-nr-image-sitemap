@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Netresearch\NrImageSitemap\Domain\Repository;
 
+use Doctrine\DBAL\Result;
 use Doctrine\DBAL\Driver\Exception;
-use Doctrine\DBAL\Driver\ResultStatement;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Database\Connection;
@@ -122,7 +122,7 @@ class ImageFileReferenceRepository extends Repository
      * @param int[]    $excludedDoktypes List of excluded document types
      * @param string   $additionalWhere  Additional where clause
      *
-     * @return \Doctrine\DBAL\Result|int
+     * @return Result|int
      */
     private function getAllRecords(
         array $fileTypes,
@@ -130,7 +130,7 @@ class ImageFileReferenceRepository extends Repository
         array $tables,
         array $excludedDoktypes = [],
         string $additionalWhere = ''
-    ): \Doctrine\DBAL\Result|int {
+    ): Result|int {
         $connection = $this->connectionPool->getConnectionForTable('sys_file_reference');
 
         $queryBuilder = $connection->createQueryBuilder();
