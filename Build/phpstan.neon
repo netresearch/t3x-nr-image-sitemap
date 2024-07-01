@@ -9,7 +9,7 @@ parameters:
     level: 6
 
     paths:
-        - %currentWorkingDirectory%/Classes/
+        - Classes/
         - %currentWorkingDirectory%/Configuration/
         - %currentWorkingDirectory%/Resources/
         # - %currentWorkingDirectory%/ext_localconf.php
