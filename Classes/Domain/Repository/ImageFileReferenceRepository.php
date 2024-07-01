@@ -83,7 +83,7 @@ class ImageFileReferenceRepository extends Repository
     ): ?QueryResultInterface {
         $statement       = $this->getAllRecords($fileTypes, $pageList, $tables, $excludedDoktypes, $additionalWhere);
         $existingRecords = [];
-
+    
         // Walk result set row by row, to prevent too much memory usage
         while ($row = $statement->fetchAssociative()) {
             if (!isset($row['tablenames'], $row['uid_foreign'])) {
@@ -122,7 +122,7 @@ class ImageFileReferenceRepository extends Repository
      * @param int[]    $excludedDoktypes List of excluded document types
      * @param string   $additionalWhere  Additional where clause
      *
-     * @return ResultStatement
+     * @return \Doctrine\DBAL\Result|int
      */
     private function getAllRecords(
         array $fileTypes,
@@ -130,11 +130,11 @@ class ImageFileReferenceRepository extends Repository
         array $tables,
         array $excludedDoktypes = [],
         string $additionalWhere = ''
-    ): ResultStatement {
+    ): \Doctrine\DBAL\Result|int {
         $connection = $this->connectionPool->getConnectionForTable('sys_file_reference');
 
         $queryBuilder = $connection->createQueryBuilder();
-        $queryBuilder->select('r.uid', 'r.uid_foreign', 'r.tablenames')
+        $queryBuilder->select('r.uid','r.uid_foreign','r.tablenames')
             ->from('sys_file_reference', 'r')
             ->leftJoin(
                 'r',
