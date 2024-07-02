@@ -23,6 +23,7 @@ use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Seo\XmlSitemap\AbstractXmlSitemapDataProvider;
 use TYPO3\CMS\Seo\XmlSitemap\Exception\MissingConfigurationException;
+
 use function count;
 
 /**
@@ -60,7 +61,7 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
         ServerRequestInterface $request,
         string $key,
         array $config = [],
-        ContentObjectRenderer $cObj = null
+        ?ContentObjectRenderer $cObj = null
     ) {
         parent::__construct($request, $key, $config, $cObj);
 
@@ -84,7 +85,7 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
     {
         $tables = GeneralUtility::trimExplode(',', $this->config['tables']);
 
-        if (empty($tables)) {
+        if ($tables === []) {
             throw new MissingConfigurationException(
                 'No configuration found for sitemap ' . $this->getKey(),
                 1_652_249_698
@@ -134,7 +135,7 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
                 // Create hash to merge all images belonging to same site
                 $hashedUri = md5($frontendUri);
 
-                $items[$hashedUri]['uri'] = $frontendUri;
+                $items[$hashedUri]['uri']      = $frontendUri;
                 $items[$hashedUri]['images'][] = $image;
             }
         }

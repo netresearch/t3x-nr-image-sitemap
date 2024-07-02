@@ -1,0 +1,19 @@
+parameters:
+    # You can currently choose from 10 levels (0 is the loosest and 9 is the strictest).
+    level: 5
+
+    paths:
+        - %currentWorkingDirectory%/Classes/
+        - %currentWorkingDirectory%/Configuration/
+        - %currentWorkingDirectory%/Resources/
+
+    excludePaths:
+        - %currentWorkingDirectory%/.build/*
+        - %currentWorkingDirectory%/ext_emconf.php
+
+
+    checkGenericClassInNonGenericObjectType: false
+    treatPhpDocTypesAsCertain: false
+
+    ignoreErrors:
+

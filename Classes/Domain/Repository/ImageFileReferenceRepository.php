@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Netresearch\NrImageSitemap\Domain\Repository;
 
 use Doctrine\DBAL\Driver\Exception;
-use Doctrine\DBAL\Driver\ResultStatement;
+use Doctrine\DBAL\Result;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Database\Connection;
@@ -46,8 +46,8 @@ class ImageFileReferenceRepository extends Repository
      * Constructor.
      *
      * @param ObjectManagerInterface $objectManager
-     * @param ConnectionPool $connectionPool
-     * @param Context $context
+     * @param ConnectionPool         $connectionPool
+     * @param Context                $context
      */
     public function __construct(
         ObjectManagerInterface $objectManager,
@@ -57,7 +57,7 @@ class ImageFileReferenceRepository extends Repository
         parent::__construct($objectManager);
 
         $this->connectionPool = $connectionPool;
-        $this->context = $context;
+        $this->context        = $context;
     }
 
     /**
@@ -69,7 +69,7 @@ class ImageFileReferenceRepository extends Repository
      * @param int[]    $excludedDoktypes List of excluded document types
      * @param string   $additionalWhere  Additional where clause
      *
-     * @return null|QueryResultInterface
+     * @return QueryResultInterface|null
      *
      * @throws InvalidQueryException
      * @throws Exception
@@ -99,7 +99,7 @@ class ImageFileReferenceRepository extends Repository
         // Remove duplicates
         $existingRecords = array_unique($existingRecords);
 
-        if (empty($existingRecords)) {
+        if ($existingRecords === []) {
             return null;
         }
 
@@ -122,7 +122,7 @@ class ImageFileReferenceRepository extends Repository
      * @param int[]    $excludedDoktypes List of excluded document types
      * @param string   $additionalWhere  Additional where clause
      *
-     * @return ResultStatement
+     * @return Result|int
      */
     private function getAllRecords(
         array $fileTypes,
@@ -130,12 +130,11 @@ class ImageFileReferenceRepository extends Repository
         array $tables,
         array $excludedDoktypes = [],
         string $additionalWhere = ''
-    ): ResultStatement {
+    ): Result|int {
         $connection = $this->connectionPool->getConnectionForTable('sys_file_reference');
 
         $queryBuilder = $connection->createQueryBuilder();
-        $queryBuilder
-            ->select('r.uid', 'r.uid_foreign', 'r.tablenames')
+        $queryBuilder->select('r.uid', 'r.uid_foreign', 'r.tablenames')
             ->from('sys_file_reference', 'r')
             ->leftJoin(
                 'r',
@@ -195,7 +194,7 @@ class ImageFileReferenceRepository extends Repository
                 )
             );
 
-        if (!empty($excludedDoktypes)) {
+        if ($excludedDoktypes !== []) {
             $queryBuilder->andWhere(
                 $queryBuilder->expr()->notIn(
                     'p.doktype',
@@ -207,7 +206,7 @@ class ImageFileReferenceRepository extends Repository
             );
         }
 
-        if (!empty($additionalWhere)) {
+        if ($additionalWhere !== '') {
             $queryBuilder->andWhere(
                 QueryHelper::stripLogicalOperatorPrefix($additionalWhere)
             );
@@ -232,7 +231,7 @@ class ImageFileReferenceRepository extends Repository
         $schemaManager = $connection->getSchemaManager();
 
         // Table did not exist => abort
-        if (!$schemaManager || !$schemaManager->tablesExist([ $tableName ])) {
+        if (!$schemaManager || !$schemaManager->tablesExist([$tableName])) {
             return false;
         }
 

@@ -8,6 +8,12 @@
       "email": "rico.sonntag@netresearch.de",
       "role": "Developer",
       "homepage": "https://www.netresearch.de/"
+    },
+    {
+      "name": "Philipp Altmann",
+      "email": "philipp.altmann@netresearch.de",
+      "role": "Developer",
+      "homepage": "https://www.netresearch.de/"
     }
   ],
   "require": {
@@ -25,7 +31,8 @@
   },	
   "extra": {
     "typo3/cms": {
-      "extension-key": "nr_image_sitemap"
+      "extension-key": "nr_image_sitemap",
+      "web-dir": ".build/public"
     }
   },
   "autoload": {
@@ -34,6 +41,12 @@
     }
   },
   "config": {
+    "bin-dir": ".build/bin",
+    "vendor-dir": ".build/vendor",
+    "discard-changes": true,
+    "sort-packages": true,
+    "optimize-autoloader": true,
+    "platform-check": false,
     "allow-plugins": {
       "typo3/class-alias-loader": true,
       "typo3/cms-composer-installers": true
