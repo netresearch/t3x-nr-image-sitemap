@@ -64,6 +64,5 @@ return static function (RectorConfig $rectorConfig): void {
         TypedPropertyFromStrictConstructorRector::class,
         InjectAnnotationRector::class,
         Rector\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector::class,
-        //        \Rector\Php54\Rector\Array_\LongArrayToShortArrayRector::class,
     ]);
 };
