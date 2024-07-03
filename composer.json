@@ -1,78 +1,80 @@
 {
-  "name": "netresearch/nr-image-sitemap",
-  "type": "typo3-cms-extension",
-  "description": "Provides a data provider to use with the typo3/cms-seo extension, to create an image sitemap",
-  "authors": [
-    {
-      "name": "Rico Sonntag",
-      "email": "rico.sonntag@netresearch.de",
-      "role": "Developer",
-      "homepage": "https://www.netresearch.de/"
+    "name": "netresearch/nr-image-sitemap",
+    "type": "typo3-cms-extension",
+    "description": "Provides a data provider to use with the typo3/cms-seo extension, to create an image sitemap",
+    "authors": [
+        {
+            "name": "Rico Sonntag",
+            "email": "rico.sonntag@netresearch.de",
+            "role": "Developer",
+            "homepage": "https://www.netresearch.de/"
+        },
+        {
+            "name": "Philipp Altmann",
+            "email": "philipp.altmann@netresearch.de",
+            "role": "Developer",
+            "homepage": "https://www.netresearch.de/"
+        }
+    ],
+    "require": {
+        "typo3/cms-core": "^11.5.0",
+        "typo3/cms-seo": "^11.5.0"
     },
-    {
-      "name": "Philipp Altmann",
-      "email": "philipp.altmann@netresearch.de",
-      "role": "Developer",
-      "homepage": "https://www.netresearch.de/"
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.59",
+        "friendsoftypo3/phpstan-typo3": "^0.9",
+        "overtrue/phplint": "^3.4 || ^9.0",
+        "phpstan/phpstan": "^1.10",
+        "phpstan/phpstan-strict-rules": "^1.5",
+        "phpstan/phpstan-deprecation-rules": "^1.1",
+        "ssch/typo3-rector": "^1.5"
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "nr_image_sitemap",
+            "web-dir": ".build/public"
+        },
+        "branch-alias": {
+            "dev-TYPO3-11": "11.0.x-dev"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Netresearch\\NrImageSitemap\\": "Classes"
+        }
+    },
+    "config": {
+        "bin-dir": ".build/bin",
+        "vendor-dir": ".build/vendor",
+        "discard-changes": true,
+        "sort-packages": true,
+        "optimize-autoloader": true,
+        "platform-check": false,
+        "allow-plugins": {
+            "typo3/class-alias-loader": true,
+            "typo3/cms-composer-installers": true
+        }
+    },
+    "scripts": {
+        "ci:test:php:lint": [
+            "phplint --configuration Build/.phplint.yml"
+        ],
+        "ci:test:php:phpstan": [
+            "phpstan analyze --configuration Build/phpstan.neon"
+        ],
+        "ci:test:php:phpstan:baseline": [
+            "phpstan analyze --configuration Build/phpstan.neon --generate-baseline Build/phpstan-baseline.neon --allow-empty-baseline"
+        ],
+        "ci:test:php:rector": [
+            "rector process --config Build/rector.php --dry-run"
+        ],
+        "ci:test": [
+            "@ci:test:php:lint",
+            "@ci:test:php:phpstan",
+            "@ci:test:php:rector"
+        ],
+        "ci:cgl": [
+            "php-cs-fixer fix --config Build/.php-cs-fixer.dist.php --diff --verbose --cache-file .build/.php-cs-fixer.cache"
+        ]
     }
-  ],
-  "require": {
-    "typo3/cms-core": "^11.5.0",
-    "typo3/cms-seo": "^11.5.0"
-  },
-  "require-dev": {
-    "friendsofphp/php-cs-fixer": "^3.59",
-    "friendsoftypo3/phpstan-typo3": "^0.9",
-    "overtrue/phplint": "^3.4 || ^9.0",
-    "phpstan/phpstan": "^1.10",
-    "phpstan/phpstan-strict-rules": "^1.5",
-    "phpstan/phpstan-deprecation-rules": "^1.1",
-    "ssch/typo3-rector": "^1.5"
-  },	
-  "extra": {
-    "typo3/cms": {
-      "extension-key": "nr_image_sitemap",
-      "web-dir": ".build/public"
-    }
-  },
-  "autoload": {
-    "psr-4": {
-      "Netresearch\\NrImageSitemap\\": "Classes"
-    }
-  },
-  "config": {
-    "bin-dir": ".build/bin",
-    "vendor-dir": ".build/vendor",
-    "discard-changes": true,
-    "sort-packages": true,
-    "optimize-autoloader": true,
-    "platform-check": false,
-    "allow-plugins": {
-      "typo3/class-alias-loader": true,
-      "typo3/cms-composer-installers": true
-    }
-  },
-  "scripts": {
-      "ci:test:php:lint": [
-          "phplint --configuration Build/.phplint.yml"
-      ],
-      "ci:test:php:phpstan": [
-          "phpstan analyze --configuration Build/phpstan.neon"
-      ],
-      "ci:test:php:phpstan:baseline": [
-          "phpstan analyze --configuration Build/phpstan.neon --generate-baseline Build/phpstan-baseline.neon --allow-empty-baseline"
-      ],
-      "ci:test:php:rector": [
-          "rector process --config Build/rector.php --dry-run"
-      ],
-      "ci:test": [
-          "@ci:test:php:lint",
-          "@ci:test:php:phpstan",
-          "@ci:test:php:rector"
-      ],
-      "ci:cgl": [
-          "php-cs-fixer fix --config Build/.php-cs-fixer.dist.php --diff --verbose --cache-file .build/.php-cs-fixer.cache"
-      ]
-  }
-
 }
