@@ -14,15 +14,17 @@ namespace Netresearch\NrImageSitemap\Seo;
 use Netresearch\NrImageSitemap\Domain\Model\ImageFileReference;
 use Netresearch\NrImageSitemap\Domain\Repository\ImageFileReferenceRepository;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Object\Exception;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Seo\XmlSitemap\AbstractXmlSitemapDataProvider;
 use TYPO3\CMS\Seo\XmlSitemap\Exception\MissingConfigurationException;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 use function count;
 
@@ -65,15 +67,18 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
     ) {
         parent::__construct($request, $key, $config, $cObj);
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $context = GeneralUtility::makeInstance(Context::class);
 
         $this->imageFileReferenceRepository
-            = $objectManager->get(ImageFileReferenceRepository::class);
+            = GeneralUtility::makeInstance(ImageFileReferenceRepository::class, $connectionPool, $context);
         $this->uriBuilder
-            = $objectManager->get(UriBuilder::class);
+            = GeneralUtility::makeInstance(UriBuilder::class);
 
         $this->generateItems();
+
     }
+
 
     /**
      * @throws \Doctrine\DBAL\Driver\Exception

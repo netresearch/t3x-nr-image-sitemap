@@ -18,8 +18,10 @@ use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryHelper;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
@@ -50,12 +52,11 @@ class ImageFileReferenceRepository extends Repository
      * @param Context                $context
      */
     public function __construct(
-        ObjectManagerInterface $objectManager,
         ConnectionPool $connectionPool,
         Context $context
     ) {
-        parent::__construct($objectManager);
-
+        parent::__construct();
+        $this->injectPersistenceManager(GeneralUtility::makeInstance(PersistenceManager::class));
         $this->connectionPool = $connectionPool;
         $this->context        = $context;
     }
@@ -104,14 +105,19 @@ class ImageFileReferenceRepository extends Repository
         }
 
         $query = $this->createQuery();
+        $connection = $this->connectionPool->getConnectionForTable('sys_file_reference');
 
+        $queryBuilder = $connection->createQueryBuilder();
         // Return all records
         return $query
             ->matching(
                 $query->in('uid', $existingRecords)
             )
             ->execute();
+        
     }
+
+
 
     /**
      * Returns all file reference records.
