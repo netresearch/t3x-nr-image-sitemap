@@ -48,15 +48,12 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
     private readonly UriBuilder $uriBuilder;
 
     /**
-     * Constructor.
-     *
-     * @param ServerRequestInterface     $request
-     * @param string                     $key
-     * @param array                      $config
+     * @param ServerRequestInterface $request
+     * @param string $key
+     * @param array $config
      * @param ContentObjectRenderer|null $cObj
-     *
-     * @throws Exception
      * @throws InvalidQueryException
+     * @throws MissingConfigurationException
      * @throws \Doctrine\DBAL\Driver\Exception
      */
     public function __construct(
@@ -81,10 +78,10 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
 
 
     /**
-     * @throws \Doctrine\DBAL\Driver\Exception
+     * @return void
      * @throws InvalidQueryException
-     * @throws Exception
      * @throws MissingConfigurationException
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
     public function generateItems(): void
     {

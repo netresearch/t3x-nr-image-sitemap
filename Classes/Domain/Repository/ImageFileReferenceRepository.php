@@ -47,7 +47,6 @@ class ImageFileReferenceRepository extends Repository
     /**
      * Constructor.
      *
-     * @param ObjectManagerInterface $objectManager
      * @param ConnectionPool         $connectionPool
      * @param Context                $context
      */
