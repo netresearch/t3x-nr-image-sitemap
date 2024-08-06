@@ -11,9 +11,6 @@ declare(strict_types=1);
 
 use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\Config\RectorConfig;
-use Rector\DeadCode\Rector\ClassMethod\RemoveUselessParamTagRector;
-use Rector\DeadCode\Rector\ClassMethod\RemoveUselessReturnTagRector;
-use Rector\DeadCode\Rector\Property\RemoveUselessVarTagRector;
 use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
 use Rector\Php80\Rector\FunctionLike\MixedTypeRector;
 use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
@@ -36,7 +33,7 @@ return static function (RectorConfig $rectorConfig): void {
         '../ext_*.sql',
     ]);
 
-    $rectorConfig->phpstanConfig('phpstan.neon');
+    $rectorConfig->phpstanConfig('Build/phpstan.neon');
     $rectorConfig->importNames();
     $rectorConfig->removeUnusedImports();
     $rectorConfig->disableParallel();
