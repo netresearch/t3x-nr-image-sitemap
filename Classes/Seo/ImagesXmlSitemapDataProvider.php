@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Netresearch\NrImageSitemap\Seo;
 
+use Doctrine\DBAL\Driver\Exception;
 use Netresearch\NrImageSitemap\Domain\Model\ImageFileReference;
 use Netresearch\NrImageSitemap\Domain\Repository\ImageFileReferenceRepository;
 use Psr\Http\Message\ServerRequestInterface;
@@ -53,7 +54,7 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
      *
      * @throws InvalidQueryException
      * @throws MissingConfigurationException
-     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws Exception
      */
     public function __construct(
         ServerRequestInterface $request,
@@ -79,7 +80,7 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
      *
      * @throws InvalidQueryException
      * @throws MissingConfigurationException
-     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws Exception
      */
     public function generateItems(): void
     {

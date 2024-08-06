@@ -36,7 +36,7 @@ return static function (RectorConfig $rectorConfig): void {
         '../ext_*.sql',
     ]);
 
-    $rectorConfig->phpstanConfig('Build/phpstan.neon');
+    $rectorConfig->phpstanConfig('phpstan.neon');
     $rectorConfig->importNames();
     $rectorConfig->removeUnusedImports();
     $rectorConfig->disableParallel();
@@ -57,13 +57,8 @@ return static function (RectorConfig $rectorConfig): void {
         ClassPropertyAssignToConstructorPromotionRector::class,
         MixedTypeRector::class,
         NullToStrictStringFuncCallArgRector::class,
-        RemoveUselessParamTagRector::class,
-        RemoveUselessReturnTagRector::class,
-        RemoveUselessVarTagRector::class,
         TypedPropertyFromAssignsRector::class,
         TypedPropertyFromStrictConstructorRector::class,
-        InjectAnnotationRector::class,
-        Rector\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector::class,
         //        \Rector\Php54\Rector\Array_\LongArrayToShortArrayRector::class,
     ]);
 };
