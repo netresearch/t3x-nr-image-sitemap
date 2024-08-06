@@ -19,12 +19,10 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
-use TYPO3\CMS\Extbase\Object\Exception;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Seo\XmlSitemap\AbstractXmlSitemapDataProvider;
 use TYPO3\CMS\Seo\XmlSitemap\Exception\MissingConfigurationException;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 use function count;
 
@@ -48,10 +46,11 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
     private readonly UriBuilder $uriBuilder;
 
     /**
-     * @param ServerRequestInterface $request
-     * @param string $key
-     * @param array $config
+     * @param ServerRequestInterface     $request
+     * @param string                     $key
+     * @param array                      $config
      * @param ContentObjectRenderer|null $cObj
+     *
      * @throws InvalidQueryException
      * @throws MissingConfigurationException
      * @throws \Doctrine\DBAL\Driver\Exception
@@ -65,7 +64,7 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
         parent::__construct($request, $key, $config, $cObj);
 
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        $context = GeneralUtility::makeInstance(Context::class);
+        $context        = GeneralUtility::makeInstance(Context::class);
 
         $this->imageFileReferenceRepository
             = GeneralUtility::makeInstance(ImageFileReferenceRepository::class, $connectionPool, $context);
@@ -73,12 +72,11 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
             = GeneralUtility::makeInstance(UriBuilder::class);
 
         $this->generateItems();
-
     }
-
 
     /**
      * @return void
+     *
      * @throws InvalidQueryException
      * @throws MissingConfigurationException
      * @throws \Doctrine\DBAL\Driver\Exception

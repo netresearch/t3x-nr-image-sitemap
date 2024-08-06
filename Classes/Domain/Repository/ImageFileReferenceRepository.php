@@ -19,7 +19,6 @@ use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
@@ -47,8 +46,8 @@ class ImageFileReferenceRepository extends Repository
     /**
      * Constructor.
      *
-     * @param ConnectionPool         $connectionPool
-     * @param Context                $context
+     * @param ConnectionPool $connectionPool
+     * @param Context        $context
      */
     public function __construct(
         ConnectionPool $connectionPool,
@@ -103,20 +102,18 @@ class ImageFileReferenceRepository extends Repository
             return null;
         }
 
-        $query = $this->createQuery();
+        $query      = $this->createQuery();
         $connection = $this->connectionPool->getConnectionForTable('sys_file_reference');
 
         $queryBuilder = $connection->createQueryBuilder();
+
         // Return all records
         return $query
             ->matching(
                 $query->in('uid', $existingRecords)
             )
             ->execute();
-        
     }
-
-
 
     /**
      * Returns all file reference records.
