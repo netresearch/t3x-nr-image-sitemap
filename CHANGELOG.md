@@ -1,3 +1,9 @@
+# 11.1.1
+
+## MISC
+
+- NEXT-46: Correct ext_emconf versions 72b711b
+
 # 11.1.0
 
 ## MISC
