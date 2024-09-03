@@ -1,31 +1,34 @@
 {
-  "name": "netresearch/nr-image-sitemap",
-  "type": "typo3-cms-extension",
-  "description": "Provides a data provider to use with the typo3/cms-seo extension, to create an image sitemap",
-  "authors": [
-    {
-      "name": "Rico Sonntag",
-      "email": "rico.sonntag@netresearch.de",
-      "role": "Developer",
-      "homepage": "https://www.netresearch.de/"
+    "name": "netresearch/nr-image-sitemap",
+    "type": "typo3-cms-extension",
+    "description": "Provides a data provider to use with the typo3/cms-seo extension, to create an image sitemap",
+    "authors": [
+        {
+            "name": "Rico Sonntag",
+            "email": "rico.sonntag@netresearch.de",
+            "role": "Developer",
+            "homepage": "https://www.netresearch.de/"
+        }
+    ],
+    "require": {
+        "typo3/cms-core": "^10.4.0",
+        "typo3/cms-seo": "^10.4.0"
+    },
+    "replace": {
+        "nr-image-sitemap": "self.version",
+        "typo3-ter/nr-image-sitemap": "self.version"
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "nr_image_sitemap"
+        },
+        "branch-alias": {
+            "dev-main": "10.1.x-dev"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Netresearch\\NrImageSitemap\\": "Classes"
+        }
     }
-  ],
-  "require": {
-    "typo3/cms-core": "^10.4.0",
-    "typo3/cms-seo": "^10.4.0"
-  },
-  "replace": {
-    "nr-image-sitemap": "self.version",
-    "typo3-ter/nr-image-sitemap": "self.version"
-  },
-  "extra": {
-    "typo3/cms": {
-      "extension-key": "nr_image_sitemap"
-    }
-  },
-  "autoload": {
-    "psr-4": {
-      "Netresearch\\NrImageSitemap\\": "Classes"
-    }
-  }
 }
