@@ -23,7 +23,7 @@
             "extension-key": "nr_image_sitemap"
         },
         "branch-alias": {
-            "dev-TYPO3-10": "10.0.x-dev"
+            "dev-TYPO3-10": "10.1.x-dev"
         }
     },
     "autoload": {
