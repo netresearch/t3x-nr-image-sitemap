@@ -1,0 +1,28 @@
+# PHPStorm
+.idea
+
+# OSX
+.DS_Store
+
+# Composer
+vendor/
+public/
+bin/
+logs/
+composer.lock
+
+# Build stuff
+.build/
+
+# PHPUnit
+phpunit-report.xml
+coverage/
+
+# Cache
+.php-cs-fixer.cache
+.phplint.cache
+.phpunit.result.cache
+
+/Resources/chem_files
+
+phpstan-report.xml
