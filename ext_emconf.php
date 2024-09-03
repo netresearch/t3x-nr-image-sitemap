@@ -1,14 +1,5 @@
 <?php
 
-/**
- * This file is part of the package netresearch/nr-image-sitemap.
- *
- * For the full copyright and license information, please read the
- * LICENSE file that was distributed with this source code.
- */
-
-declare(strict_types=1);
-
 /***************************************************************
  * Extension Manager/Repository config file for ext "nr_image_sitemap".
  *
