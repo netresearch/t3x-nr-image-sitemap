@@ -1,3 +1,10 @@
+# 11.1.0
+
+## MISC
+
+- NEXT-46: Set pipeline for publish into TER 778018a
+- NEXT-46: Update README.rst 39a21cf
+
 # 11.0.1
 
 ## MISC

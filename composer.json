@@ -35,7 +35,7 @@
             "web-dir": ".build/public"
         },
         "branch-alias": {
-            "dev-TYPO3-11": "11.0.x-dev"
+            "dev-TYPO3-11": "11.1.x-dev"
         }
     },
     "autoload": {
