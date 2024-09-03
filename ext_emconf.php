@@ -13,7 +13,7 @@
 $EM_CONF[$_EXTKEY] = [
     'title'            => 'Netresearch - Sitemap Extension',
     'description'      => 'Provides a data provider to use with the typo3/cms-seo extension, to create an image sitemap',
-    'version'          => '10.1.3',
+    'version'          => '10.1.4',
     'category'         => 'plugin',
     'constraints'      => [
         'depends'   => [
