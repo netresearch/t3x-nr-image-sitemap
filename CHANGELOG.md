@@ -1,3 +1,9 @@
+# 10.1.2
+
+## MISC
+
+- NEXT-46: Fix pipeline to push into TER c9f62f4
+
 # 10.1.0
 
 ## MISC
