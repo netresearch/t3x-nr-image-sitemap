@@ -1,3 +1,9 @@
+# 11.1.2
+
+## MISC
+
+- NEXT-46: Correct ext_emconf versions ca91cf5
+
 # 11.1.1
 
 ## MISC
