@@ -1,3 +1,9 @@
+# 10.1.3
+
+## MISC
+
+- NEXT-46: Update dependency versions in ext_emconf d0a599a
+
 # 10.1.2
 
 ## MISC
