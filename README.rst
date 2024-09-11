@@ -15,6 +15,14 @@ Configuration
 
 Before using the extension, ensure that the start page with the lowest ID is configured as the root page. This ID serves as the starting point for the sitemap generation.
 
+**Adding the Extension to the Template**
+
+1. Navigate to the Template module in the TYPO3 backend.
+2. Select the topmost page in your site tree (this should be the root page).
+3. Click on Info/Modify.
+4. Choose Edit the whole template record.
+5. In the Includes tab, add the extension nr_image_sitemap.
+
 **Configuration via Backend Constants Editor**
 
 1. Navigate to the **Template** module in the TYPO3 backend.
