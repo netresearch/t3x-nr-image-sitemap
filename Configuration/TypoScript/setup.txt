@@ -28,8 +28,8 @@ plugin.tx_seo {
             sitemaps {
                 images {
                     provider = Netresearch\NrImageSitemap\Seo\ImagesXmlSitemapDataProvider
+                    template = Sitemap/Images
                     config {
-                        template = Sitemap/Images
                         rootPage = {$plugin.tx_nrimagesitemap.settings.xmlImagesSitemap.rootPage}
                         tables = {$plugin.tx_nrimagesitemap.settings.xmlImagesSitemap.tables}
                         excludedDoktypes = {$plugin.tx_nrimagesitemap.settings.xmlImagesSitemap.excludedDoktypes}

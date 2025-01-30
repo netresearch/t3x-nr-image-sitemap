@@ -8,12 +8,11 @@
  */
 
 declare(strict_types=1);
+use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 
-use Netresearch\NrImageSitemap\Domain\Model\ImageFileReference;
-
-// Defines the mapping of the table record to a domain model class
 return [
-    ImageFileReference::class => [
-        'tableName' => 'sys_file_reference',
+    'nr_image_sitemap_extension_icon' => [
+        'provider' => SvgIconProvider::class,
+        'source'   => 'EXT:nr_image_sitemap/Resources/Public/Icons/Extension.svg',
     ],
 ];
