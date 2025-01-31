@@ -11,18 +11,21 @@ declare(strict_types=1);
 
 namespace Netresearch\NrImageSitemap\Seo;
 
+use Doctrine\DBAL\Driver\Exception;
 use Netresearch\NrImageSitemap\Domain\Model\ImageFileReference;
 use Netresearch\NrImageSitemap\Domain\Repository\ImageFileReferenceRepository;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
-use TYPO3\CMS\Extbase\Object\Exception;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Seo\XmlSitemap\AbstractXmlSitemapDataProvider;
 use TYPO3\CMS\Seo\XmlSitemap\Exception\MissingConfigurationException;
+
 use function count;
 
 /**
@@ -37,57 +40,63 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
     /**
      * @var ImageFileReferenceRepository
      */
-    private ImageFileReferenceRepository $imageFileReferenceRepository;
+    private readonly ImageFileReferenceRepository $imageFileReferenceRepository;
 
     /**
      * @var UriBuilder
      */
-    private UriBuilder $uriBuilder;
+    private readonly UriBuilder $uriBuilder;
 
     /**
-     * Constructor.
-     *
+     * @var PageRepository
+     */
+    private readonly PageRepository $pageRepository;
+
+    /**
      * @param ServerRequestInterface     $request
      * @param string                     $key
      * @param array                      $config
      * @param ContentObjectRenderer|null $cObj
      *
-     * @throws Exception
      * @throws InvalidQueryException
-     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws MissingConfigurationException
+     * @throws Exception
      */
     public function __construct(
         ServerRequestInterface $request,
         string $key,
         array $config = [],
-        ContentObjectRenderer $cObj = null
+        ?ContentObjectRenderer $cObj = null
     ) {
         parent::__construct($request, $key, $config, $cObj);
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $context        = GeneralUtility::makeInstance(Context::class);
 
         $this->imageFileReferenceRepository
-            = $objectManager->get(ImageFileReferenceRepository::class);
+            = GeneralUtility::makeInstance(ImageFileReferenceRepository::class, $connectionPool, $context);
         $this->uriBuilder
-            = $objectManager->get(UriBuilder::class);
+            = GeneralUtility::makeInstance(UriBuilder::class);
+        $this->pageRepository = GeneralUtility::makeInstance(PageRepository::class);
 
         $this->generateItems();
     }
 
     /**
-     * @throws \Doctrine\DBAL\Driver\Exception
+     * @return void
+     *
      * @throws InvalidQueryException
-     * @throws Exception
      * @throws MissingConfigurationException
+     * @throws Exception
      */
     public function generateItems(): void
     {
         $tables = GeneralUtility::trimExplode(',', $this->config['tables']);
 
-        if (empty($tables)) {
+        if ($tables === []) {
             throw new MissingConfigurationException(
                 'No configuration found for sitemap ' . $this->getKey(),
-                1652249698
+                1_652_249_698
             );
         }
 
@@ -107,8 +116,7 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
             $rootPageId = $this->request->getAttribute('site')->getRootPageId();
         }
 
-        $treeList      = $this->cObj->getTreeList(-$rootPageId, 99);
-        $treeListArray = GeneralUtility::intExplode(',', $treeList);
+        $treeListArray = $this->pageRepository->getPageIdsRecursive([$rootPageId], 99);
 
         /** @var ImageFileReference[] $images */
         $images = $this->imageFileReferenceRepository->findAllImages(
@@ -123,20 +131,22 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
 
         $items = [];
 
-        if ($images && count($images)) {
-            foreach ($images as $image) {
-                $frontendUri = $this->uriBuilder
-                    ->reset()
-                    ->setCreateAbsoluteUri(true)
-                    ->setTargetPageUid($image->getPid())
-                    ->buildFrontendUri();
+        if (!$images || !count($images)) {
+            return;
+        }
 
-                // Create hash to merge all images belonging to same site
-                $hashedUri = md5($frontendUri);
+        foreach ($images as $image) {
+            $frontendUri = $this->uriBuilder
+                ->reset()
+                ->setCreateAbsoluteUri(true)
+                ->setTargetPageUid($image->getPid())
+                ->buildFrontendUri();
 
-                $items[$hashedUri]['uri'] = $frontendUri;
-                $items[$hashedUri]['images'][] = $image;
-            }
+            // Create hash to merge all images belonging to same site
+            $hashedUri = md5($frontendUri);
+
+            $items[$hashedUri]['uri']      = $frontendUri;
+            $items[$hashedUri]['images'][] = $image;
         }
 
         $this->items = $items;
