@@ -2,6 +2,7 @@
   "name": "netresearch/nr-image-sitemap",
   "type": "typo3-cms-extension",
   "description": "Provides a data provider to use with the typo3/cms-seo extension, to create an image sitemap",
+  "license": "AGPL-3.0-or-later",
   "authors": [
     {
       "name": "Rico Sonntag",
