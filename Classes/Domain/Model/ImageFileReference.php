@@ -23,26 +23,10 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
  */
 class ImageFileReference extends FileReference
 {
-    /**
-     * @var string
-     */
     protected string $title = '';
-
-    /**
-     * @var string
-     */
     protected string $description = '';
-
-    /**
-     * @var string
-     */
     protected string $tablenames = '';
 
-    /**
-     * Returns the title.
-     *
-     * @return string|null
-     */
     public function getTitle(): ?string
     {
         if ($this->title !== '' && $this->title !== '0') {
@@ -56,11 +40,6 @@ class ImageFileReference extends FileReference
         return null;
     }
 
-    /**
-     * Returns the description.
-     *
-     * @return string|null
-     */
     public function getDescription(): ?string
     {
         if ($this->description !== '' && $this->description !== '0') {
@@ -74,22 +53,12 @@ class ImageFileReference extends FileReference
         return null;
     }
 
-    /**
-     * Returns the URL of the file.
-     *
-     * @return string
-     */
     public function getPublicUrl(): string
     {
         return GeneralUtility::getIndpEnv('TYPO3_SITE_URL')
             . $this->getOriginalResource()->getPublicUrl();
     }
 
-    /**
-     * Returns the name of the table the file belongs too.
-     *
-     * @return string
-     */
     public function getTablenames(): string
     {
         return $this->tablenames;
