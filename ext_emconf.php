@@ -11,30 +11,27 @@
  ***************************************************************/
 
 $EM_CONF[$_EXTKEY] = [
-    'title'            => 'Netresearch - Sitemap Extension',
-    'description'      => 'Provides a data provider to use with the typo3/cms-seo extension, to create an image sitemap',
-    'version'          => '10.1.1',
-    'category'         => 'plugin',
-    'constraints'      => [
-        'depends'   => [
-            'typo3' => '10.4.0-',
-            'seo'   => '10.4.0-',
+    'title'       => 'Netresearch - Sitemap Extension',
+    'description' => 'Provides a data provider to use with the typo3/cms-seo extension, to create an image sitemap',
+    'version'     => '12.0.0',
+    'category'    => 'plugin',
+    'constraints' => [
+        'depends' => [
+            'typo3' => '12.4.0-',
+            'seo'   => '12.4.0-',
         ],
         'conflicts' => [
         ],
         'suggests'  => [
         ],
     ],
-    'autoload'         => [
+    'autoload' => [
         'psr-4' => [
             'Netresearch\\NrImageSitemap\\' => 'Classes',
         ],
     ],
-    'state'            => 'stable',
-    'uploadfolder'     => false,
-    'createDirs'       => '',
-    'clearCacheOnLoad' => true,
-    'author'           => 'Rico Sonntag',
-    'author_email'     => 'rico.sonntag@netresearch.de',
-    'author_company'   => 'Netresearch DTT GmbH',
+    'state'          => 'stable',
+    'author'         => 'Rico Sonntag',
+    'author_email'   => 'rico.sonntag@netresearch.de',
+    'author_company' => 'Netresearch DTT GmbH',
 ];
