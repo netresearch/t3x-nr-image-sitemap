@@ -80,7 +80,7 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
         if ($tables === []) {
             throw new MissingConfigurationException(
                 'No configuration found for sitemap ' . $this->getKey(),
-                1_652_249_698
+                1652249698
             );
         }
 
