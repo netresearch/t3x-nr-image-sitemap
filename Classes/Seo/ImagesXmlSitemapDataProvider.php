@@ -17,14 +17,15 @@ use Netresearch\NrImageSitemap\Domain\Repository\ImageFileReferenceRepository;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Resource\AbstractFile;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\Typolink\LinkFactory;
 use TYPO3\CMS\Seo\XmlSitemap\AbstractXmlSitemapDataProvider;
 use TYPO3\CMS\Seo\XmlSitemap\Exception\MissingConfigurationException;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Site\SiteFinder;
 
 use function count;
 
@@ -43,14 +44,12 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
     private readonly ImageFileReferenceRepository $imageFileReferenceRepository;
 
     /**
-     * @var UriBuilder
-     */
-    private readonly UriBuilder $uriBuilder;
-
-    /**
      * @var PageRepository
      */
     private readonly PageRepository $pageRepository;
+
+    private readonly SiteFinder $siteFinder;
+    private readonly LinkFactory $linkFactory;
 
     /**
      * @param ServerRequestInterface     $request
@@ -75,9 +74,9 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
 
         $this->imageFileReferenceRepository
             = GeneralUtility::makeInstance(ImageFileReferenceRepository::class, $connectionPool, $context);
-        $this->uriBuilder
-            = GeneralUtility::makeInstance(UriBuilder::class);
         $this->pageRepository = GeneralUtility::makeInstance(PageRepository::class);
+        $this->siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+        $this->linkFactory = GeneralUtility::makeInstance(LinkFactory::class);
 
         $this->generateItems();
     }
@@ -136,11 +135,12 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
         }
 
         foreach ($images as $image) {
-            $frontendUri = $this->uriBuilder
-                ->reset()
-                ->setCreateAbsoluteUri(true)
-                ->setTargetPageUid($image->getPid())
-                ->buildFrontendUri();
+            $link = $this->linkFactory->createUri((string) $image->getPid());
+            $site = $this->siteFinder->getSiteByPageId($image->getPid());
+            $baseUrl = $site->getBase()->__toString();
+
+            // Construct full URL
+            $frontendUri = rtrim($baseUrl, '/') . '/' . ltrim($link->getUrl(), '/');
 
             // Create hash to merge all images belonging to same site
             $hashedUri = md5($frontendUri);
