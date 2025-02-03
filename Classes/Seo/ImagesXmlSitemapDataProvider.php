@@ -38,25 +38,12 @@ use function count;
  */
 class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
 {
-    /**
-     * @var ImageFileReferenceRepository
-     */
     private readonly ImageFileReferenceRepository $imageFileReferenceRepository;
-
-    /**
-     * @var PageRepository
-     */
     private readonly PageRepository $pageRepository;
-
     private readonly SiteFinder $siteFinder;
     private readonly LinkFactory $linkFactory;
 
     /**
-     * @param ServerRequestInterface     $request
-     * @param string                     $key
-     * @param array                      $config
-     * @param ContentObjectRenderer|null $cObj
-     *
      * @throws InvalidQueryException
      * @throws MissingConfigurationException
      * @throws Exception
@@ -82,8 +69,6 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
     }
 
     /**
-     * @return void
-     *
      * @throws InvalidQueryException
      * @throws MissingConfigurationException
      * @throws Exception
