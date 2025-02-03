@@ -214,7 +214,7 @@ class ImageFileReferenceRepository extends Repository
             );
         }
 
-        return $queryBuilder->execute();
+        return $queryBuilder->executeQuery();
     }
 
     /**
@@ -230,7 +230,7 @@ class ImageFileReferenceRepository extends Repository
     private function findRecordByForeignUid(string $tableName, int $foreignUid): bool
     {
         $connection    = $this->connectionPool->getConnectionForTable($tableName);
-        $schemaManager = $connection->getSchemaManager();
+        $schemaManager = $connection->createSchemaManager();
 
         // Table did not exist => abort
         if (!$schemaManager || !$schemaManager->tablesExist([$tableName])) {
@@ -251,7 +251,7 @@ class ImageFileReferenceRepository extends Repository
                     )
                 )
             )
-            ->execute()
+            ->executeQuery()
             ->fetchOne();
     }
 

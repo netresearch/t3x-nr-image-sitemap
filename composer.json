@@ -18,18 +18,18 @@
     }
   ],
   "require": {
-    "typo3/cms-core": "^12.4.0",
-    "typo3/cms-seo": "^12.4.0"
+    "typo3/cms-core": "^13.0.0",
+    "typo3/cms-seo": "^13.0.0"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.59",
-    "friendsoftypo3/phpstan-typo3": "^0.9",
-    "overtrue/phplint": "^3.4 || ^9.0",
+    "friendsoftypo3/phpstan-typo3": "^0.10",
+    "overtrue/phplint": "^9.0",
     "phpstan/phpstan": "^1.10",
     "phpstan/phpstan-strict-rules": "^1.5",
     "phpstan/phpstan-deprecation-rules": "^1.1",
-    "ssch/typo3-rector": "^1.5"
-  },	
+    "ssch/typo3-rector": "^1.7"
+  },
   "extra": {
     "typo3/cms": {
       "extension-key": "nr_image_sitemap",
@@ -54,26 +54,25 @@
     }
   },
   "scripts": {
-      "ci:test:php:lint": [
-          "phplint --configuration Build/.phplint.yml"
-      ],
-      "ci:test:php:phpstan": [
-          "phpstan analyze --configuration Build/phpstan.neon"
-      ],
-      "ci:test:php:phpstan:baseline": [
-          "phpstan analyze --configuration Build/phpstan.neon --generate-baseline Build/phpstan-baseline.neon --allow-empty-baseline"
-      ],
-      "ci:test:php:rector": [
-          "rector process --config Build/rector.php --dry-run"
-      ],
-      "ci:test": [
-          "@ci:test:php:lint",
-          "@ci:test:php:phpstan",
-          "@ci:test:php:rector"
-      ],
-      "ci:cgl": [
-          "php-cs-fixer fix --config Build/.php-cs-fixer.dist.php --diff --verbose --cache-file .build/.php-cs-fixer.cache"
-      ]
+    "ci:test:php:lint": [
+      "phplint --configuration Build/.phplint.yml"
+    ],
+    "ci:test:php:phpstan": [
+      "phpstan analyze --configuration Build/phpstan.neon"
+    ],
+    "ci:test:php:phpstan:baseline": [
+      "phpstan analyze --configuration Build/phpstan.neon --generate-baseline Build/phpstan-baseline.neon --allow-empty-baseline"
+    ],
+    "ci:test:php:rector": [
+      "rector process --config Build/rector.php --dry-run"
+    ],
+    "ci:test": [
+      "@ci:test:php:lint",
+      "@ci:test:php:phpstan",
+      "@ci:test:php:rector"
+    ],
+    "ci:cgl": [
+      "php-cs-fixer fix --config Build/.php-cs-fixer.dist.php --diff --verbose --cache-file .build/.php-cs-fixer.cache"
+    ]
   }
-
 }
