@@ -33,22 +33,9 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class ImageFileReferenceRepository extends Repository
 {
-    /**
-     * @var ConnectionPool
-     */
     private readonly ConnectionPool $connectionPool;
-
-    /**
-     * @var Context
-     */
     private readonly Context $context;
 
-    /**
-     * Constructor.
-     *
-     * @param ConnectionPool $connectionPool
-     * @param Context        $context
-     */
     public function __construct(
         ConnectionPool $connectionPool,
         Context $context
@@ -61,14 +48,6 @@ class ImageFileReferenceRepository extends Repository
 
     /**
      * Returns file references for given file types.
-     *
-     * @param int[]    $fileTypes        List of file types to return the file references
-     * @param int[]    $pageList         List of page IDs to include
-     * @param string[] $tables           List of tables names used to filter the result
-     * @param int[]    $excludedDoktypes List of excluded document types
-     * @param string   $additionalWhere  Additional where clause
-     *
-     * @return QueryResultInterface|null
      *
      * @throws InvalidQueryException
      * @throws Exception
@@ -117,14 +96,6 @@ class ImageFileReferenceRepository extends Repository
 
     /**
      * Returns all file reference records.
-     *
-     * @param int[]    $fileTypes        List of file types to return the file references
-     * @param int[]    $pageList         List of page IDs to include
-     * @param string[] $tables           List of tables names used to filter the result
-     * @param int[]    $excludedDoktypes List of excluded document types
-     * @param string   $additionalWhere  Additional where clause
-     *
-     * @return Result|int
      */
     private function getAllRecords(
         array $fileTypes,
@@ -220,11 +191,6 @@ class ImageFileReferenceRepository extends Repository
     /**
      * Returns the UID of the record the foreign table related to or FALSE otherwise.
      *
-     * @param string $tableName  The foreign table to check
-     * @param int    $foreignUid The foreign UID to check
-     *
-     * @return bool
-     *
      * @throws Exception
      */
     private function findRecordByForeignUid(string $tableName, int $foreignUid): bool
@@ -257,8 +223,6 @@ class ImageFileReferenceRepository extends Repository
 
     /**
      * Returns the current language UID.
-     *
-     * @return int
      */
     private function getLanguageUid(): int
     {
