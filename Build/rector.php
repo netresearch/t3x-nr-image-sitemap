@@ -44,7 +44,7 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::TYPE_DECLARATION,
         SetList::CODING_STYLE,
         SetList::CODE_QUALITY,
-        // SetList::DEAD_CODE,
+        SetList::DEAD_CODE,
 
         LevelSetList::UP_TO_PHP_81,
         Typo3LevelSetList::UP_TO_TYPO3_11,
@@ -56,6 +56,5 @@ return static function (RectorConfig $rectorConfig): void {
         NullToStrictStringFuncCallArgRector::class,
         TypedPropertyFromAssignsRector::class,
         TypedPropertyFromStrictConstructorRector::class,
-        //        \Rector\Php54\Rector\Array_\LongArrayToShortArrayRector::class,
     ]);
 };

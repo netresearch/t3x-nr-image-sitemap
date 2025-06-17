@@ -24,7 +24,9 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 class ImageFileReference extends FileReference
 {
     protected string $title = '';
+
     protected string $description = '';
+
     protected string $tablenames = '';
 
     public function getTitle(): ?string
