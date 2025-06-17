@@ -15,19 +15,15 @@ use Doctrine\DBAL\Driver\Exception;
 use Netresearch\NrImageSitemap\Domain\Model\ImageFileReference;
 use Netresearch\NrImageSitemap\Domain\Repository\ImageFileReferenceRepository;
 use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Resource\AbstractFile;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Typolink\LinkFactory;
 use TYPO3\CMS\Seo\XmlSitemap\AbstractXmlSitemapDataProvider;
 use TYPO3\CMS\Seo\XmlSitemap\Exception\MissingConfigurationException;
-use TYPO3\CMS\Core\Domain\Repository\PageRepository;
-use TYPO3\CMS\Core\Site\SiteFinder;
-
-use function count;
 
 /**
  * Generate sitemap for images.
@@ -52,18 +48,14 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
         ServerRequestInterface $request,
         string $key,
         array $config = [],
-        ?ContentObjectRenderer $cObj = null
+        ?ContentObjectRenderer $cObj = null,
     ) {
         parent::__construct($request, $key, $config, $cObj);
 
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        $context        = GeneralUtility::makeInstance(Context::class);
-
-        $this->imageFileReferenceRepository
-            = GeneralUtility::makeInstance(ImageFileReferenceRepository::class, $connectionPool, $context);
-        $this->pageRepository = GeneralUtility::makeInstance(PageRepository::class);
-        $this->siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
-        $this->linkFactory = GeneralUtility::makeInstance(LinkFactory::class);
+        $this->imageFileReferenceRepository = GeneralUtility::makeInstance(ImageFileReferenceRepository::class);
+        $this->pageRepository               = GeneralUtility::makeInstance(PageRepository::class);
+        $this->siteFinder                   = GeneralUtility::makeInstance(SiteFinder::class);
+        $this->linkFactory                  = GeneralUtility::makeInstance(LinkFactory::class);
 
         $this->generateItems();
     }
@@ -120,8 +112,8 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
         }
 
         foreach ($images as $image) {
-            $link = $this->linkFactory->createUri((string) $image->getPid());
-            $site = $this->siteFinder->getSiteByPageId($image->getPid());
+            $link    = $this->linkFactory->createUri((string) $image->getPid());
+            $site    = $this->siteFinder->getSiteByPageId($image->getPid());
             $baseUrl = $site->getBase()->__toString();
 
             // Construct full URL

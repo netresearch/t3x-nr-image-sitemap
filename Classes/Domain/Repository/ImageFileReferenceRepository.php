@@ -18,9 +18,8 @@ use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryHelper;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
@@ -33,17 +32,12 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  */
 class ImageFileReferenceRepository extends Repository
 {
-    private readonly ConnectionPool $connectionPool;
-    private readonly Context $context;
-
     public function __construct(
-        ConnectionPool $connectionPool,
-        Context $context
+        protected PersistenceManagerInterface $persistenceManager,
+        private readonly ConnectionPool $connectionPool,
+        private readonly Context $context,
     ) {
         parent::__construct();
-        $this->injectPersistenceManager(GeneralUtility::makeInstance(PersistenceManager::class));
-        $this->connectionPool = $connectionPool;
-        $this->context        = $context;
     }
 
     /**
@@ -57,7 +51,7 @@ class ImageFileReferenceRepository extends Repository
         array $pageList,
         array $tables,
         array $excludedDoktypes = [],
-        string $additionalWhere = ''
+        string $additionalWhere = '',
     ): ?QueryResultInterface {
         $statement       = $this->getAllRecords($fileTypes, $pageList, $tables, $excludedDoktypes, $additionalWhere);
         $existingRecords = [];
@@ -84,7 +78,7 @@ class ImageFileReferenceRepository extends Repository
         $query      = $this->createQuery();
         $connection = $this->connectionPool->getConnectionForTable('sys_file_reference');
 
-        $queryBuilder = $connection->createQueryBuilder();
+        $connection->createQueryBuilder();
 
         // Return all records
         return $query
@@ -102,8 +96,8 @@ class ImageFileReferenceRepository extends Repository
         array $pageList,
         array $tables,
         array $excludedDoktypes = [],
-        string $additionalWhere = ''
-    ): Result|int {
+        string $additionalWhere = '',
+    ): Result {
         $connection = $this->connectionPool->getConnectionForTable('sys_file_reference');
 
         $queryBuilder = $connection->createQueryBuilder();
@@ -199,7 +193,7 @@ class ImageFileReferenceRepository extends Repository
         $schemaManager = $connection->createSchemaManager();
 
         // Table did not exist => abort
-        if (!$schemaManager || !$schemaManager->tablesExist([$tableName])) {
+        if (!$schemaManager->tablesExist([$tableName])) {
             return false;
         }
 
