@@ -3,7 +3,7 @@ nr_image_sitemap
 ================
 This extension provides a data provider to use with the typo3/cms-seo extension, to create an image sitemap.
 
-Instalation
+Installation
 -----------
 1. Install the extension via composer
 .. code-block:: bash
