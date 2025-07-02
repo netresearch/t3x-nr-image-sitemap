@@ -1,3 +1,13 @@
+# 13.0.2
+
+## TASK
+
+- 1db4bc6 [TASK] Fix version dependencies
+
+## Contributors
+
+- Gitsko
+
 # 13.0.1
 
 # 13.0.0
