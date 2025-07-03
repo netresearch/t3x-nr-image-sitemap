@@ -1,3 +1,13 @@
+# 13.0.5
+
+## TASK
+
+- 308dc7a [TASK] Update publish-to-ter.yml
+
+## Contributors
+
+- Gitsko
+
 # 13.0.4
 
 ## TASK
