@@ -1,3 +1,13 @@
+# 12.0.1
+
+## TASK
+
+- 8c2e5fa [TASK] Update publish-to-ter.yml
+
+## Contributors
+
+- Gitsko
+
 # 12.0.0
 
 ## MISC
