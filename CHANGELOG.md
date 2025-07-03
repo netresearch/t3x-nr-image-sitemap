@@ -1,3 +1,13 @@
+# 13.0.6
+
+## TASK
+
+- 39bcec0 [TASK] Update ext_emconf.php to load in TER via tailor
+
+## Contributors
+
+- Gitsko
+
 # 13.0.5
 
 ## TASK
