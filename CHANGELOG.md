@@ -1,3 +1,13 @@
+# 12.0.2
+
+## TASK
+
+- 02b5145 [TASK] Correct version contraints
+
+## Contributors
+
+- Gitsko
+
 # 12.0.1
 
 ## TASK
