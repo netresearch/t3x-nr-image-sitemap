@@ -30,7 +30,7 @@
         "phpstan/phpstan": "^1.10 || ^2.0",
         "phpstan/phpstan-strict-rules": "^1.5 || ^2.0",
         "phpstan/phpstan-deprecation-rules": "^1.1 || ^2.0",
-        "ssch/typo3-rector": "^1.7"
+        "ssch/typo3-rector": "^1.7 || ^3.0"
     },
     "extra": {
         "typo3/cms": {
