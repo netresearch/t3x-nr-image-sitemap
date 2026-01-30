@@ -20,7 +20,7 @@
     "require": {
         "php": "^8.2",
         "ext-json": "*",
-        "typo3/cms-core": "^13.0.0",
+        "typo3/cms-core": "^13.0.0 || ^14.0.0",
         "typo3/cms-seo": "^13.0.0"
     },
     "require-dev": {
