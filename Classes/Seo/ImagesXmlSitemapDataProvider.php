@@ -110,7 +110,7 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
 
         $items = [];
 
-        if (!$images || $images === []) {
+        if (!$images || $images->count() === 0) {
             return;
         }
 
