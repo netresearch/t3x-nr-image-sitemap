@@ -12,6 +12,6 @@ jobs:
       php-versions: '["8.2"]'
       typo3-versions: '["^13.0"]'
       typo3-packages: '["typo3/cms-core", "typo3/cms-seo"]'
-      run-rector: true
+      run-rector: false  # rector 0.17.0 in .build/ is incompatible with PHP 8.2+
       run-unit-tests: false
       run-functional-tests: false
