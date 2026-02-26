@@ -97,7 +97,7 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
 
         $treeListArray = $this->pageRepository->getPageIdsRecursive([$rootPageId], 99);
 
-        /** @var ImageFileReference[] $images */
+        /** @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface<ImageFileReference>|null $images */
         $images = $this->imageFileReferenceRepository->findAllImages(
             [
                 AbstractFile::FILETYPE_IMAGE,
