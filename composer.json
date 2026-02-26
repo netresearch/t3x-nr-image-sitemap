@@ -62,7 +62,7 @@
         "ci:cgl": [
             "php-cs-fixer fix --config Build/.php-cs-fixer.dist.php --diff --verbose --cache-file .build/.php-cs-fixer.cache"
         ],
-        "ci:test:php:cgl": "@ci:cgl -- --dry-run",
+        "ci:test:php:cgl": "php-cs-fixer fix --config Build/.php-cs-fixer.dist.php --diff --verbose --cache-file .build/.php-cs-fixer.cache --dry-run",
         "ci:test:php:lint": [
             "phplint --configuration Build/.phplint.yml"
         ],
