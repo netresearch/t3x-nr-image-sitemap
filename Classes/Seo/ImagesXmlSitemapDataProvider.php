@@ -35,8 +35,11 @@ use TYPO3\CMS\Seo\XmlSitemap\Exception\MissingConfigurationException;
 class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
 {
     private readonly ImageFileReferenceRepository $imageFileReferenceRepository;
+
     private readonly PageRepository $pageRepository;
+
     private readonly SiteFinder $siteFinder;
+
     private readonly LinkFactory $linkFactory;
 
     /**
@@ -72,7 +75,7 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
         if ($tables === []) {
             throw new MissingConfigurationException(
                 'No configuration found for sitemap ' . $this->getKey(),
-                1652249698
+                1_652_249_698
             );
         }
 
@@ -107,7 +110,7 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
 
         $items = [];
 
-        if (!$images || !count($images)) {
+        if (!$images || $images === []) {
             return;
         }
 
