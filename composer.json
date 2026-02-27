@@ -30,7 +30,7 @@
         "phpstan/phpstan": "^2.0",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpstan/phpstan-strict-rules": "^2.0",
-        "saschaegerer/phpstan-typo3": "^2.0",
+        "saschaegerer/phpstan-typo3": "^2.0 || ^3.0",
         "ssch/typo3-rector": "^3.0"
     },
     "extra": {
