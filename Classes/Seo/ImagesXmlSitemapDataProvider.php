@@ -16,10 +16,11 @@ use Netresearch\NrImageSitemap\Domain\Model\ImageFileReference;
 use Netresearch\NrImageSitemap\Domain\Repository\ImageFileReferenceRepository;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
-use TYPO3\CMS\Core\Resource\AbstractFile;
+use TYPO3\CMS\Core\Resource\FileType;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Typolink\LinkFactory;
 use TYPO3\CMS\Seo\XmlSitemap\AbstractXmlSitemapDataProvider;
@@ -97,10 +98,10 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
 
         $treeListArray = $this->pageRepository->getPageIdsRecursive([$rootPageId], 99);
 
-        /** @var \TYPO3\CMS\Extbase\Persistence\QueryResultInterface<ImageFileReference>|null $images */
+        /** @var QueryResultInterface<ImageFileReference>|null $images */
         $images = $this->imageFileReferenceRepository->findAllImages(
             [
-                AbstractFile::FILETYPE_IMAGE,
+                FileType::IMAGE,
             ],
             $treeListArray,
             $tables,

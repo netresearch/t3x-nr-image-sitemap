@@ -12,8 +12,8 @@ parameters:
         - %currentWorkingDirectory%/ext_emconf.php
 
 
-    checkGenericClassInNonGenericObjectType: false
     treatPhpDocTypesAsCertain: false
 
     ignoreErrors:
+        - identifier: missingType.generics
 
