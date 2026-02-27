@@ -81,16 +81,16 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
         }
 
         $excludedDoktypes = [];
-        if (!empty($this->config['excludedDoktypes'])) {
+        if (isset($this->config['excludedDoktypes']) && $this->config['excludedDoktypes'] !== '') {
             $excludedDoktypes = GeneralUtility::intExplode(',', $this->config['excludedDoktypes']);
         }
 
         $additionalWhere = '';
-        if (!empty($this->config['additionalWhere'])) {
+        if (isset($this->config['additionalWhere']) && $this->config['additionalWhere'] !== '') {
             $additionalWhere = $this->config['additionalWhere'];
         }
 
-        if (!empty($this->config['rootPage'])) {
+        if (isset($this->config['rootPage']) && $this->config['rootPage'] !== '') {
             $rootPageId = (int) $this->config['rootPage'];
         } else {
             $rootPageId = $this->request->getAttribute('site')->getRootPageId();
@@ -111,7 +111,7 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
 
         $items = [];
 
-        if (!$images || $images->count() === 0) {
+        if ($images === null || $images->count() === 0) {
             return;
         }
 

@@ -15,5 +15,4 @@ parameters:
     treatPhpDocTypesAsCertain: false
 
     ignoreErrors:
-        - identifier: missingType.generics
 
