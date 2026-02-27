@@ -24,13 +24,14 @@
         "typo3/cms-seo": "^13.0.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.59",
-        "friendsoftypo3/phpstan-typo3": "^0.9.0",
+        "friendsofphp/php-cs-fixer": "^3.65",
         "overtrue/phplint": "^9.0",
-        "phpstan/phpstan": "^1.10 || ^2.0",
-        "phpstan/phpstan-strict-rules": "^1.5 || ^2.0",
-        "phpstan/phpstan-deprecation-rules": "^1.1 || ^2.0",
-        "ssch/typo3-rector": "^1.7 || ^3.0"
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "saschaegerer/phpstan-typo3": "^2.0",
+        "ssch/typo3-rector": "^3.0"
     },
     "extra": {
         "typo3/cms": {
@@ -54,6 +55,7 @@
         "optimize-autoloader": true,
         "platform-check": false,
         "allow-plugins": {
+            "phpstan/extension-installer": true,
             "typo3/class-alias-loader": true,
             "typo3/cms-composer-installers": true
         }

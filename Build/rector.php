@@ -9,52 +9,36 @@
 
 declare(strict_types=1);
 
-use Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector;
 use Rector\Config\RectorConfig;
-use Rector\Php80\Rector\Class_\ClassPropertyAssignToConstructorPromotionRector;
-use Rector\Php80\Rector\FunctionLike\MixedTypeRector;
-use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
-use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
-use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromStrictConstructorRector;
+use Rector\ValueObject\PhpVersion;
+use Ssch\TYPO3Rector\Configuration\Typo3Option;
 use Ssch\TYPO3Rector\Set\Typo3LevelSetList;
+use Ssch\TYPO3Rector\Set\Typo3SetList;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->paths([
+return RectorConfig::configure()
+    ->withPaths([
         __DIR__ . '/../Classes',
         __DIR__ . '/../Configuration',
         __DIR__ . '/../Resources',
-        '/../ext_*',
-    ]);
-
-    $rectorConfig->skip([
-        '../ext_emconf.php',
-        '../ext_*.sql',
-    ]);
-
-    $rectorConfig->phpstanConfig('Build/phpstan.neon');
-    $rectorConfig->importNames();
-    $rectorConfig->removeUnusedImports();
-    $rectorConfig->disableParallel();
-
-    // define sets of rules
-    $rectorConfig->sets([
+    ])
+    ->withPhpVersion(PhpVersion::PHP_82)
+    ->withSets([
+        SetList::CODE_QUALITY,
+        SetList::CODING_STYLE,
+        SetList::DEAD_CODE,
         SetList::EARLY_RETURN,
         SetList::TYPE_DECLARATION,
-        SetList::CODING_STYLE,
-        SetList::CODE_QUALITY,
-        SetList::DEAD_CODE,
 
-        LevelSetList::UP_TO_PHP_81,
-        Typo3LevelSetList::UP_TO_TYPO3_11,
-    ]);
-    $rectorConfig->skip([
-        CatchExceptionNameMatchingTypeRector::class,
-        ClassPropertyAssignToConstructorPromotionRector::class,
-        MixedTypeRector::class,
-        NullToStrictStringFuncCallArgRector::class,
-        TypedPropertyFromAssignsRector::class,
-        TypedPropertyFromStrictConstructorRector::class,
-    ]);
-};
+        LevelSetList::UP_TO_PHP_82,
+
+        Typo3SetList::CODE_QUALITY,
+        Typo3SetList::GENERAL,
+        Typo3LevelSetList::UP_TO_TYPO3_13,
+    ])
+    ->withPHPStanConfigs([
+        Typo3Option::PHPSTAN_FOR_RECTOR_PATH,
+    ])
+    ->withImportNames(true, true, false, true)
+;
