@@ -1,0 +1,5 @@
+# Gitleaks configuration — allowlist for false positives
+[allowlist]
+  paths = [
+    'vendor/',
+  ]
