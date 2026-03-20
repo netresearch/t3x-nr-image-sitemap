@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the package netresearch/nr-image-sitemap.
  *
  * For the full copyright and license information, please read the
@@ -31,7 +31,8 @@ use TYPO3\CMS\Seo\XmlSitemap\Exception\MissingConfigurationException;
  *
  * @author  Rico Sonntag <rico.sonntag@netresearch.de>
  * @license Netresearch https://www.netresearch.de
- * @link    https://www.netresearch.de
+ *
+ * @see    https://www.netresearch.de
  */
 class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
 {
@@ -76,7 +77,7 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
         if ($tables === []) {
             throw new MissingConfigurationException(
                 'No configuration found for sitemap ' . $this->getKey(),
-                1_652_249_698
+                1_652_249_698,
             );
         }
 
@@ -106,7 +107,7 @@ class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
             $treeListArray,
             $tables,
             $excludedDoktypes,
-            $additionalWhere
+            $additionalWhere,
         );
 
         $items = [];
