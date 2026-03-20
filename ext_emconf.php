@@ -7,6 +7,8 @@
  * LICENSE file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 $EM_CONF[$_EXTKEY] = [
     'title'       => 'Netresearch - Sitemap Extension',
     'description' => 'Provides a data provider to use with the typo3/cms-seo extension, to create an image sitemap',
