@@ -93,6 +93,7 @@ return (new PhpCsFixer\Config())
             ->exclude('var')
             ->exclude('vendor')
             ->exclude('public')
+            ->notPath('ext_emconf.php')
             ->in(__DIR__ . '/../')
     );
 
