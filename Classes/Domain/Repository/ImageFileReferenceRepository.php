@@ -1,6 +1,6 @@
 <?php
 
-/**
+/*
  * This file is part of the package netresearch/nr-image-sitemap.
  *
  * For the full copyright and license information, please read the
@@ -28,7 +28,8 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  *
  * @author  Rico Sonntag <rico.sonntag@netresearch.de>
  * @license Netresearch https://www.netresearch.de
- * @link    https://www.netresearch.de
+ *
+ * @see    https://www.netresearch.de
  */
 class ImageFileReferenceRepository extends Repository
 {
@@ -83,7 +84,7 @@ class ImageFileReferenceRepository extends Repository
         // Return all records
         return $query
             ->matching(
-                $query->in('uid', $existingRecords)
+                $query->in('uid', $existingRecords),
             )
             ->execute();
     }
@@ -107,58 +108,58 @@ class ImageFileReferenceRepository extends Repository
                 'r',
                 'sys_file',
                 'f',
-                $queryBuilder->expr()->eq('f.uid', $queryBuilder->quoteIdentifier('r.uid_local'))
+                $queryBuilder->expr()->eq('f.uid', $queryBuilder->quoteIdentifier('r.uid_local')),
             )
             ->leftJoin(
                 'r',
                 'pages',
                 'p',
-                $queryBuilder->expr()->eq('p.uid', $queryBuilder->quoteIdentifier('r.pid'))
+                $queryBuilder->expr()->eq('p.uid', $queryBuilder->quoteIdentifier('r.pid')),
             )
             ->andWhere(
                 $queryBuilder->expr()->in(
                     'p.uid',
                     $queryBuilder->createNamedParameter(
                         $pageList,
-                        Connection::PARAM_INT_ARRAY
-                    )
-                )
+                        Connection::PARAM_INT_ARRAY,
+                    ),
+                ),
             )
             ->andWhere(
-                $queryBuilder->expr()->isNotNull('f.uid')
+                $queryBuilder->expr()->isNotNull('f.uid'),
             )
             ->andWhere(
-                $queryBuilder->expr()->eq('f.missing', 0)
+                $queryBuilder->expr()->eq('f.missing', 0),
             )
             ->andWhere(
                 $queryBuilder->expr()->in(
                     'f.type',
                     $queryBuilder->createNamedParameter(
                         $fileTypes,
-                        Connection::PARAM_INT_ARRAY
-                    )
-                )
+                        Connection::PARAM_INT_ARRAY,
+                    ),
+                ),
             )
             ->andWhere(
                 $queryBuilder->expr()->in(
                     'r.tablenames',
                     $queryBuilder->createNamedParameter(
                         $tables,
-                        Connection::PARAM_STR_ARRAY
-                    )
-                )
+                        Connection::PARAM_STR_ARRAY,
+                    ),
+                ),
             )
             ->andWhere(
-                $queryBuilder->expr()->eq('r.t3ver_wsid', 0)
+                $queryBuilder->expr()->eq('r.t3ver_wsid', 0),
             )
             ->andWhere(
                 $queryBuilder->expr()->eq(
                     'r.sys_language_uid',
                     $queryBuilder->createNamedParameter(
                         $this->getLanguageUid(),
-                        Connection::PARAM_INT
-                    )
-                )
+                        Connection::PARAM_INT,
+                    ),
+                ),
             );
 
         if ($excludedDoktypes !== []) {
@@ -167,15 +168,15 @@ class ImageFileReferenceRepository extends Repository
                     'p.doktype',
                     $queryBuilder->createNamedParameter(
                         $excludedDoktypes,
-                        Connection::PARAM_INT_ARRAY
-                    )
-                )
+                        Connection::PARAM_INT_ARRAY,
+                    ),
+                ),
             );
         }
 
         if ($additionalWhere !== '') {
             $queryBuilder->andWhere(
-                QueryHelper::stripLogicalOperatorPrefix($additionalWhere)
+                QueryHelper::stripLogicalOperatorPrefix($additionalWhere),
             );
         }
 
@@ -207,9 +208,9 @@ class ImageFileReferenceRepository extends Repository
                     'uid',
                     $queryBuilder->createNamedParameter(
                         $foreignUid,
-                        Connection::PARAM_INT
-                    )
-                )
+                        Connection::PARAM_INT,
+                    ),
+                ),
             )
             ->executeQuery()
             ->fetchOne();
