@@ -22,7 +22,7 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
  *
  * @see    https://www.netresearch.de
  */
-class ImageFileReference extends FileReference
+final class ImageFileReference extends FileReference
 {
     protected string $title = '';
 

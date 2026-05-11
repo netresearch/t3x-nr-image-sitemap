@@ -31,7 +31,7 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  *
  * @see    https://www.netresearch.de
  */
-class ImageFileReferenceRepository extends Repository
+final class ImageFileReferenceRepository extends Repository
 {
     public function __construct(
         protected PersistenceManagerInterface $persistenceManager,

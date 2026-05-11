@@ -34,7 +34,7 @@ use TYPO3\CMS\Seo\XmlSitemap\Exception\MissingConfigurationException;
  *
  * @see    https://www.netresearch.de
  */
-class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
+final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
 {
     private readonly ImageFileReferenceRepository $imageFileReferenceRepository;
 
