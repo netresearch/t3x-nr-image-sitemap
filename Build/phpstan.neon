@@ -26,4 +26,20 @@ parameters:
                 - TYPO3\CMS\Seo\XmlSitemap\AbstractXmlSitemapDataProvider
 
     ignoreErrors:
+        # The XmlSitemapDataProviderInterface::__construct contract from
+        # typo3/cms-seo dictates the exact constructor signature (including
+        # ?ContentObjectRenderer $cObj = null and array $config = []). PHP
+        # enforces strict signature compatibility with interface methods, so
+        # we cannot drop these defaults or the nullable type without producing
+        # a fatal error at runtime. The matching ergebnis violations are
+        # structurally unavoidable for this single class.
+        -
+            identifier: ergebnis.noConstructorParameterWithDefaultValue
+            path: ../Classes/Seo/ImagesXmlSitemapDataProvider.php
+        -
+            identifier: ergebnis.noParameterWithNullableTypeDeclaration
+            path: ../Classes/Seo/ImagesXmlSitemapDataProvider.php
+        -
+            identifier: ergebnis.noParameterWithNullDefaultValue
+            path: ../Classes/Seo/ImagesXmlSitemapDataProvider.php
 
