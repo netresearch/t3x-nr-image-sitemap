@@ -14,5 +14,16 @@ parameters:
 
     treatPhpDocTypesAsCertain: false
 
+    # Allow extending TYPO3 framework base classes that are mandatory integration points:
+    # - FileReference: required to register a custom Extbase file reference domain model
+    # - Repository: required Extbase persistence base class
+    # - AbstractXmlSitemapDataProvider: required base class for typo3/cms-seo data providers
+    ergebnis:
+        noExtends:
+            classesAllowedToBeExtended:
+                - TYPO3\CMS\Extbase\Domain\Model\FileReference
+                - TYPO3\CMS\Extbase\Persistence\Repository
+                - TYPO3\CMS\Seo\XmlSitemap\AbstractXmlSitemapDataProvider
+
     ignoreErrors:
 
