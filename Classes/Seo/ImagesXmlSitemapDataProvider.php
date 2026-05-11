@@ -43,7 +43,7 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
     private readonly LinkFactory $linkFactory;
 
     /**
-     * Constructor signature is fixed by the {@see XmlSitemapDataProviderInterface}
+     * Constructor signature is fixed by the {@see \TYPO3\CMS\Seo\XmlSitemap\XmlSitemapDataProviderInterface}
      * contract, which is part of typo3/cms-seo and cannot be altered here.
      * The four ergebnis rule violations for $config / $cObj are suppressed in
      * Build/phpstan.neon for this file.
