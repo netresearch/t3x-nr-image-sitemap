@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Netresearch\NrImageSitemap\Seo;
 
 use Doctrine\DBAL\Driver\Exception;
-use Netresearch\NrImageSitemap\Domain\Model\ImageFileReference;
 use Netresearch\NrImageSitemap\Domain\Repository\ImageFileReferenceRepository;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
@@ -20,7 +19,6 @@ use TYPO3\CMS\Core\Resource\FileType;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
-use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Typolink\LinkFactory;
 use TYPO3\CMS\Seo\XmlSitemap\AbstractXmlSitemapDataProvider;
@@ -45,6 +43,13 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
     private readonly LinkFactory $linkFactory;
 
     /**
+     * Constructor signature is fixed by the {@see XmlSitemapDataProviderInterface}
+     * contract, which is part of typo3/cms-seo and cannot be altered here.
+     * The four ergebnis rule violations for $config / $cObj are suppressed in
+     * Build/phpstan.neon for this file.
+     *
+     * @param array<string, mixed> $config
+     *
      * @throws InvalidQueryException
      * @throws MissingConfigurationException
      * @throws Exception
@@ -72,7 +77,7 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
      */
     public function generateItems(): void
     {
-        $tables = GeneralUtility::trimExplode(',', $this->config['tables']);
+        $tables = GeneralUtility::trimExplode(',', (string) ($this->config['tables'] ?? ''));
 
         if ($tables === []) {
             throw new MissingConfigurationException(
@@ -81,25 +86,20 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
             );
         }
 
-        $excludedDoktypes = [];
-        if (isset($this->config['excludedDoktypes']) && $this->config['excludedDoktypes'] !== '') {
-            $excludedDoktypes = GeneralUtility::intExplode(',', $this->config['excludedDoktypes']);
-        }
+        $excludedDoktypesConfig = (string) ($this->config['excludedDoktypes'] ?? '');
+        $excludedDoktypes       = $excludedDoktypesConfig !== ''
+            ? GeneralUtility::intExplode(',', $excludedDoktypesConfig)
+            : [];
 
-        $additionalWhere = '';
-        if (isset($this->config['additionalWhere']) && $this->config['additionalWhere'] !== '') {
-            $additionalWhere = $this->config['additionalWhere'];
-        }
+        $additionalWhere = (string) ($this->config['additionalWhere'] ?? '');
 
-        if (isset($this->config['rootPage']) && $this->config['rootPage'] !== '') {
-            $rootPageId = (int) $this->config['rootPage'];
-        } else {
-            $rootPageId = $this->request->getAttribute('site')->getRootPageId();
-        }
+        $rootPageConfig = (string) ($this->config['rootPage'] ?? '');
+        $rootPageId     = $rootPageConfig !== ''
+            ? (int) $rootPageConfig
+            : $this->request->getAttribute('site')->getRootPageId();
 
         $treeListArray = $this->pageRepository->getPageIdsRecursive([$rootPageId], 99);
 
-        /** @var QueryResultInterface<ImageFileReference>|null $images */
         $images = $this->imageFileReferenceRepository->findAllImages(
             [
                 FileType::IMAGE,
@@ -110,11 +110,11 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
             $additionalWhere,
         );
 
-        $items = [];
-
-        if ($images === null || $images->count() === 0) {
+        if ($images === []) {
             return;
         }
+
+        $items = [];
 
         foreach ($images as $image) {
             $link    = $this->linkFactory->createUri((string) $image->getPid());

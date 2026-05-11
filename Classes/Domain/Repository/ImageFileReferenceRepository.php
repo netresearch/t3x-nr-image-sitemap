@@ -13,14 +13,15 @@ namespace Netresearch\NrImageSitemap\Domain\Repository;
 
 use Doctrine\DBAL\Driver\Exception;
 use Doctrine\DBAL\Result;
+use Netresearch\NrImageSitemap\Domain\Model\ImageFileReference;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryHelper;
+use TYPO3\CMS\Core\Resource\FileType;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
-use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
@@ -44,6 +45,13 @@ final class ImageFileReferenceRepository extends Repository
     /**
      * Returns file references for given file types.
      *
+     * @param array<int, FileType|int> $fileTypes
+     * @param array<int, int>          $pageList
+     * @param array<int, string>       $tables
+     * @param array<int, int>          $excludedDoktypes
+     *
+     * @return array<int, ImageFileReference>
+     *
      * @throws InvalidQueryException
      * @throws Exception
      */
@@ -51,20 +59,24 @@ final class ImageFileReferenceRepository extends Repository
         array $fileTypes,
         array $pageList,
         array $tables,
-        array $excludedDoktypes = [],
-        string $additionalWhere = '',
-    ): ?QueryResultInterface {
+        array $excludedDoktypes,
+        string $additionalWhere,
+    ): array {
         $statement       = $this->getAllRecords($fileTypes, $pageList, $tables, $excludedDoktypes, $additionalWhere);
         $existingRecords = [];
 
         // Walk result set row by row, to prevent too much memory usage
         while ($row = $statement->fetchAssociative()) {
-            if (!isset($row['tablenames'], $row['uid_foreign'])) {
+            if (!array_key_exists('tablenames', $row)) {
+                continue;
+            }
+
+            if (!array_key_exists('uid_foreign', $row)) {
                 continue;
             }
 
             // Check if the foreign table record exists
-            if ($this->findRecordByForeignUid($row['tablenames'], $row['uid_foreign'])) {
+            if ($this->findRecordByForeignUid((string) $row['tablenames'], (int) $row['uid_foreign'])) {
                 $existingRecords[] = (int) $row['uid'];
             }
         }
@@ -73,20 +85,20 @@ final class ImageFileReferenceRepository extends Repository
         $existingRecords = array_unique($existingRecords);
 
         if ($existingRecords === []) {
-            return null;
+            return [];
         }
 
-        $query      = $this->createQuery();
-        $connection = $this->connectionPool->getConnectionForTable('sys_file_reference');
+        $query = $this->createQuery();
 
-        $connection->createQueryBuilder();
-
-        // Return all records
-        return $query
+        /** @var array<int, ImageFileReference> $images */
+        $images = $query
             ->matching(
                 $query->in('uid', $existingRecords),
             )
-            ->execute();
+            ->execute()
+            ->toArray();
+
+        return $images;
     }
 
     /**
