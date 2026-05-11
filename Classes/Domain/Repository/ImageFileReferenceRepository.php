@@ -91,12 +91,13 @@ final class ImageFileReferenceRepository extends Repository
         $query = $this->createQuery();
 
         /** @var array<int, ImageFileReference> $images */
-        $images = $query
-            ->matching(
-                $query->in('uid', $existingRecords),
-            )
-            ->execute()
-            ->toArray();
+        $images = iterator_to_array(
+            $query
+                ->matching(
+                    $query->in('uid', $existingRecords),
+                )
+                ->execute(),
+        );
 
         return $images;
     }
