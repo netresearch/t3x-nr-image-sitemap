@@ -49,6 +49,14 @@ final class ImageFileReferenceRepository extends Repository
      * @param array<int, int>          $pageList
      * @param array<int, string>       $tables
      * @param array<int, int>          $excludedDoktypes
+     * @param string                   $additionalWhere  Raw SQL fragment appended to the `sys_file_reference` query
+     *                                                   via `andWhere()`; any leading boolean operator
+     *                                                   (`AND` / `OR`) is stripped by
+     *                                                   {@see QueryHelper::stripLogicalOperatorPrefix()}. Reference table
+     *                                                   aliases as defined in {@see self::getAllRecords()}: `r` for
+     *                                                   `sys_file_reference`, `f` for `sys_file`, `p` for `pages`
+     *                                                   (e.g. `"r.tablenames = 'pages'"`). Pass an empty string to skip.
+     *                                                   Caller is responsible for quoting / parameterising any values.
      *
      * @return array<int, ImageFileReference>
      *
