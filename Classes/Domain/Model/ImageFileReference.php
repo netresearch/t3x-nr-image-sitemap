@@ -22,7 +22,7 @@ use TYPO3\CMS\Extbase\Domain\Model\FileReference;
  *
  * @see    https://www.netresearch.de
  */
-class ImageFileReference extends FileReference
+final class ImageFileReference extends FileReference
 {
     protected string $title = '';
 
@@ -30,30 +30,30 @@ class ImageFileReference extends FileReference
 
     protected string $tablenames = '';
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         if ($this->title !== '' && $this->title !== '0') {
             return $this->title;
         }
 
         if ($this->getOriginalResource()->hasProperty('title')) {
-            return $this->getOriginalResource()->getProperty('title');
+            return (string) $this->getOriginalResource()->getProperty('title');
         }
 
-        return null;
+        return '';
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         if ($this->description !== '' && $this->description !== '0') {
             return $this->description;
         }
 
         if ($this->getOriginalResource()->hasProperty('description')) {
-            return $this->getOriginalResource()->getProperty('description');
+            return (string) $this->getOriginalResource()->getProperty('description');
         }
 
-        return null;
+        return '';
     }
 
     public function getPublicUrl(): string
