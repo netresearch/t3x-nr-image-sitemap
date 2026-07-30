@@ -1,0 +1,4 @@
+name: netresearch/image-sitemap
+label: 'Netresearch: Image Sitemap'
+dependencies:
+  - typo3/seo-sitemap

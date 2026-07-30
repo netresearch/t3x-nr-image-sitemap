@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Netresearch\NrImageSitemap\Domain\Model;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference;
 
 /**
@@ -56,10 +55,20 @@ final class ImageFileReference extends FileReference
         return '';
     }
 
+    /**
+     * Returns the public URL of the referenced file, relative to the site root and
+     * without a leading slash (for example `fileadmin/image.jpg`).
+     *
+     * Prefixing the site URL is deliberately not done here: it used to be read from
+     * GeneralUtility::getIndpEnv('TYPO3_SITE_URL'), which is deprecated since TYPO3 v14.3
+     * in favour of NormalizedParams taken from the PSR-7 request, and a domain model has
+     * no access to that request. The composition now happens in
+     * {@see \Netresearch\NrImageSitemap\Seo\ImagesXmlSitemapDataProvider}, which passes
+     * the site URL to the template as `item.baseUrl`.
+     */
     public function getPublicUrl(): string
     {
-        return GeneralUtility::getIndpEnv('TYPO3_SITE_URL')
-            . $this->getOriginalResource()->getPublicUrl();
+        return ltrim((string) $this->getOriginalResource()->getPublicUrl(), '/');
     }
 
     public function getTablenames(): string

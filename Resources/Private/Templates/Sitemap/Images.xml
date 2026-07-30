@@ -12,7 +12,7 @@
                 <lastmod><f:format.date date="now" format="c" /></lastmod>
                 <f:for each="{item.images}" as="image">
                     <image:image>
-                        <image:loc>{image.publicUrl}</image:loc>
+                        <image:loc>{item.baseUrl}{image.publicUrl}</image:loc>
                         <f:if condition="{image.title}">
                             <image:title>{image.title}</image:title>
                         </f:if>

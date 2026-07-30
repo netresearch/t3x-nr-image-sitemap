@@ -20,8 +20,8 @@
     "require": {
         "php": "^8.2",
         "ext-json": "*",
-        "typo3/cms-core": "^13.0.0",
-        "typo3/cms-seo": "^13.0.0"
+        "typo3/cms-core": "^13.4 || ^14.3",
+        "typo3/cms-seo": "^13.4 || ^14.3"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.65",
@@ -37,15 +37,24 @@
     "extra": {
         "typo3/cms": {
             "extension-key": "nr_image_sitemap",
-            "web-dir": ".build/public"
+            "version": "14.0.0",
+            "web-dir": ".build/public",
+            "Package": {
+                "providesPackages": {}
+            }
         },
         "branch-alias": {
-            "dev-main": "13.0.x-dev"
+            "dev-main": "14.0.x-dev"
         }
     },
     "autoload": {
         "psr-4": {
             "Netresearch\\NrImageSitemap\\": "Classes"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Netresearch\\NrImageSitemap\\Tests\\": "Tests"
         }
     },
     "config": {
@@ -81,10 +90,18 @@
         "ci:test:php:rector": [
             "rector process --config Build/rector.php --dry-run"
         ],
+        "ci:test:php:unit": [
+            "phpunit --configuration Build/UnitTests.xml"
+        ],
+        "ci:test:php:functional": [
+            "phpunit --configuration Build/FunctionalTests.xml"
+        ],
         "ci:test": [
             "@ci:test:php:lint",
             "@ci:test:php:phpstan",
-            "@ci:test:php:rector"
+            "@ci:test:php:rector",
+            "@ci:test:php:unit",
+            "@ci:test:php:functional"
         ]
     }
 }
