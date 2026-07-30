@@ -6,6 +6,7 @@ parameters:
         - %currentWorkingDirectory%/Classes/
         - %currentWorkingDirectory%/Configuration/
         - %currentWorkingDirectory%/Resources/
+        - %currentWorkingDirectory%/Tests/
 
     excludePaths:
         - %currentWorkingDirectory%/.build/*
@@ -18,12 +19,15 @@ parameters:
     # - FileReference: required to register a custom Extbase file reference domain model
     # - Repository: required Extbase persistence base class
     # - AbstractXmlSitemapDataProvider: required base class for typo3/cms-seo data providers
+    # - FunctionalTestCase: required base class for typo3/testing-framework functional tests
+    #   (PHPUnit\Framework\TestCase is already part of the rule's own default allow list)
     ergebnis:
         noExtends:
             classesAllowedToBeExtended:
                 - TYPO3\CMS\Extbase\Domain\Model\FileReference
                 - TYPO3\CMS\Extbase\Persistence\Repository
                 - TYPO3\CMS\Seo\XmlSitemap\AbstractXmlSitemapDataProvider
+                - TYPO3\TestingFramework\Core\Functional\FunctionalTestCase
 
     ignoreErrors:
         # The XmlSitemapDataProviderInterface::__construct contract from

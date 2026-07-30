@@ -1,0 +1,23 @@
+"pages"
+,"uid","pid","doktype","title","slug","is_siteroot","deleted","hidden"
+,1,0,1,"Root","/",1,0,0
+,2,1,254,"Folder","/folder",0,0,0
+,3,1,1,"Page with a missing file","/missing-file",0,0,0
+"tt_content"
+,"uid","pid","header","deleted","hidden"
+,1,2,"Content element with an image",0,0
+"sys_file_storage"
+,"uid","pid","name","driver","is_default","is_public","is_writable","is_browsable","is_online","configuration"
+,1,0,"fileadmin","Local",1,1,1,1,1,"<T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""basePath""><value index=""vDEF"">fileadmin/</value></field><field index=""pathType""><value index=""vDEF"">relative</value></field></language></sheet></data></T3FlexForms>"
+"sys_file"
+,"uid","pid","storage","type","missing","identifier","extension","mime_type","name","size"
+,1,0,1,2,0,"/user_upload/image-one.jpg","jpg","image/jpeg","image-one.jpg",1024
+,2,0,1,2,0,"/user_upload/image-two.jpg","jpg","image/jpeg","image-two.jpg",2048
+,3,0,1,1,0,"/user_upload/readme.txt","txt","text/plain","readme.txt",64
+,4,0,1,2,1,"/user_upload/gone.jpg","jpg","image/jpeg","gone.jpg",512
+"sys_file_reference"
+,"uid","pid","uid_local","uid_foreign","tablenames","fieldname","sys_language_uid","t3ver_wsid","deleted","hidden","title","description"
+,1,1,1,1,"pages","media",0,0,0,0,"Image on the root page","Caption of the root page image"
+,2,2,2,1,"tt_content","image",0,0,0,0,"",""
+,3,1,3,1,"pages","media",0,0,0,0,"",""
+,4,3,4,1,"pages","media",0,0,0,0,"",""
