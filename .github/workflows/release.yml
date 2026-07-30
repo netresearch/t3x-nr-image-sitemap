@@ -3,7 +3,12 @@ name: Release
 on:
   push:
     tags:
+      # This repository tags releases WITHOUT a "v" prefix (12.0.2, 13.0.6,
+      # 14.0.0). A "v*" pattern alone therefore never fires, which is why the
+      # 14.0.0 release produced no GitHub release and no TER publish. Match both
+      # spellings; the called workflow strips an optional leading "v".
       - 'v*'
+      - '[0-9]+.[0-9]+.[0-9]+'
 
 permissions: {}
 
