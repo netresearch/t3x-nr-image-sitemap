@@ -19,7 +19,12 @@ jobs:
       contents: read
     with:
       php-versions: '["8.2","8.3","8.4","8.5"]'
-      typo3-versions: '["^13.0"]'
-      run-unit-tests: false
+      typo3-versions: '["^13.4","^14.3"]'
+      # Both core packages this extension requires must be pinned per matrix leg,
+      # otherwise only typo3/cms-core would be constrained and typo3/cms-seo could
+      # drift to the other major.
+      typo3-packages: '["typo3/cms-core","typo3/cms-seo"]'
+      run-unit-tests: true
+      run-functional-tests: true
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
