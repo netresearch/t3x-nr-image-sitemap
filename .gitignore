@@ -13,6 +13,7 @@ composer.lock
 
 # Build stuff
 .build/
+var/
 
 # PHPUnit
 phpunit-report.xml

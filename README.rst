@@ -3,12 +3,42 @@ nr_image_sitemap
 ================
 This extension provides a data provider to use with the typo3/cms-seo extension, to create an image sitemap.
 
+Requirements
+============
+
+* TYPO3 13.4 LTS or 14.3 LTS
+* ``typo3/cms-seo`` in the matching version
+* PHP 8.2 - 8.5
+
 Installation
------------
+============
 1. Install the extension via composer
 .. code-block:: bash
 
     composer require netresearch/nr-image-sitemap
+
+Loading the TypoScript
+======================
+
+The extension's TypoScript can be loaded in either of the two ways TYPO3 supports.
+
+**Site set (recommended, TYPO3 13.4 and 14.3)**
+
+Add the set to the ``dependencies`` of your site package set, or to
+``config/sites/<identifier>/config.yaml``:
+
+.. code-block:: yaml
+
+    dependencies:
+      - netresearch/image-sitemap
+
+The set depends on ``typo3/seo-sitemap``, so core's sitemap TypoScript is pulled in
+automatically.
+
+**Static template (sys_template)**
+
+Alternatively include the static template *Netresearch: Image Sitemap* in the template
+record of your root page.
 
 Configuration
 =============

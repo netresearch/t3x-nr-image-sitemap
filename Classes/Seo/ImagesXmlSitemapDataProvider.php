@@ -102,7 +102,9 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
 
         $images = $this->imageFileReferenceRepository->findAllImages(
             [
-                FileType::IMAGE,
+                // The case value, not the enum instance: it is bound as an integer array
+                // parameter and DBAL cannot convert an enum instance to int.
+                FileType::IMAGE->value,
             ],
             $treeListArray,
             $tables,
@@ -113,6 +115,12 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
         if ($images === []) {
             return;
         }
+
+        // Absolute URL of the frontend site root, used to turn the site-relative public URL
+        // of a file reference into an absolute one. This is the documented replacement for
+        // GeneralUtility::getIndpEnv('TYPO3_SITE_URL'), which the domain model used before
+        // and which is deprecated since TYPO3 v14.3.
+        $siteUrl = $this->request->getAttribute('normalizedParams')?->getSiteUrl() ?? '';
 
         $items = [];
 
@@ -128,6 +136,7 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
             $hashedUri = md5($frontendUri);
 
             $items[$hashedUri]['uri']      = $frontendUri;
+            $items[$hashedUri]['baseUrl']  = $siteUrl;
             $items[$hashedUri]['images'][] = $image;
         }
 
