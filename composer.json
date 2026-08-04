@@ -32,7 +32,7 @@
         "phpstan/phpstan-strict-rules": "^2.0",
         "saschaegerer/phpstan-typo3": "^2.0 || ^3.0",
         "ssch/typo3-rector": "^3.0",
-        "netresearch/typo3-ci-workflows": "^1.0"
+        "netresearch/typo3-ci-workflows": "^1.3"
     },
     "extra": {
         "typo3/cms": {
