@@ -24,15 +24,7 @@
         "typo3/cms-seo": "^13.4 || ^14.3"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.65",
-        "overtrue/phplint": "^9.0",
-        "phpstan/extension-installer": "^1.4",
-        "phpstan/phpstan": "^2.0",
-        "phpstan/phpstan-deprecation-rules": "^2.0",
-        "phpstan/phpstan-strict-rules": "^2.0",
-        "saschaegerer/phpstan-typo3": "^2.0 || ^3.0",
-        "ssch/typo3-rector": "^3.0",
-        "netresearch/typo3-ci-workflows": "^1.3"
+        "netresearch/typo3-ci-workflows": "^1.4"
     },
     "extra": {
         "typo3/cms": {
@@ -67,6 +59,7 @@
         "allow-plugins": {
             "a9f/fractor-extension-installer": true,
             "captainhook/hook-installer": true,
+            "ergebnis/composer-normalize": true,
             "infection/extension-installer": true,
             "phpstan/extension-installer": true,
             "typo3/class-alias-loader": true,
