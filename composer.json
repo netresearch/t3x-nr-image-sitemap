@@ -67,6 +67,9 @@
         }
     },
     "scripts": {
+        "post-install-cmd": [
+            "[ -x .build/bin/captainhook ] && .build/bin/captainhook install --force --skip-existing || true"
+        ],
         "ci:cgl": [
             "php-cs-fixer fix --config Build/.php-cs-fixer.dist.php --diff --verbose --cache-file .build/.php-cs-fixer.cache"
         ],
