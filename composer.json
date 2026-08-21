@@ -30,7 +30,7 @@
         "typo3/cms": {
             "extension-key": "nr_image_sitemap",
             "version": "14.0.0",
-            "web-dir": ".build/public",
+            "web-dir": ".Build/public",
             "Package": {
                 "providesPackages": {}
             }
@@ -50,8 +50,8 @@
         }
     },
     "config": {
-        "bin-dir": ".build/bin",
-        "vendor-dir": ".build/vendor",
+        "bin-dir": ".Build/bin",
+        "vendor-dir": ".Build/vendor",
         "discard-changes": true,
         "sort-packages": true,
         "optimize-autoloader": true,
@@ -68,12 +68,12 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "[ -x .build/bin/captainhook ] && .build/bin/captainhook install --force --skip-existing || true"
+            "[ -x .Build/bin/captainhook ] && .Build/bin/captainhook install --force --skip-existing || true"
         ],
         "ci:cgl": [
-            "php-cs-fixer fix --config Build/.php-cs-fixer.dist.php --diff --verbose --cache-file .build/.php-cs-fixer.cache"
+            "php-cs-fixer fix --config Build/.php-cs-fixer.dist.php --diff --verbose --cache-file .Build/.php-cs-fixer.cache"
         ],
-        "ci:test:php:cgl": "php-cs-fixer fix --config Build/.php-cs-fixer.dist.php --diff --verbose --cache-file .build/.php-cs-fixer.cache --dry-run",
+        "ci:test:php:cgl": "php-cs-fixer fix --config Build/.php-cs-fixer.dist.php --diff --verbose --cache-file .Build/.php-cs-fixer.cache --dry-run",
         "ci:test:php:lint": [
             "phplint --configuration Build/.phplint.yml"
         ],
@@ -87,7 +87,7 @@
             "rector process --config Build/rector.php --dry-run"
         ],
         "ci:test:php:unit": [
-            "phpunit --configuration Build/UnitTests.xml"
+            "phpunit --configuration Build/phpunit.xml"
         ],
         "ci:test:php:functional": [
             "phpunit --configuration Build/FunctionalTests.xml"
