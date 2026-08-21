@@ -9,7 +9,7 @@ parameters:
         - %currentWorkingDirectory%/Tests/
 
     excludePaths:
-        - %currentWorkingDirectory%/.build/*
+        - %currentWorkingDirectory%/.Build/*
         - %currentWorkingDirectory%/ext_emconf.php
 
 

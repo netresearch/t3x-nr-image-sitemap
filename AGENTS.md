@@ -9,7 +9,7 @@
 TYPO3 extension `nr_image_sitemap` (`netresearch/nr-image-sitemap`): an image-sitemap XmlSitemapDataProvider for `typo3/cms-seo`. Supports TYPO3 ^13.4 / ^14.3 on PHP ^8.2 (version: see `ext_emconf.php`). Component map: `docs/ARCHITECTURE.md`.
 
 ## Commands
-> Source: `composer.json` scripts (mirrored by `Makefile` targets). Run `composer install` first — tooling comes from the `netresearch/typo3-ci-workflows` dev dependency; binaries land in `.build/bin/`, not `vendor/bin/`.
+> Source: `composer.json` scripts (mirrored by `Makefile` targets). Run `composer install` first — tooling comes from the `netresearch/typo3-ci-workflows` dev dependency; binaries land in `.Build/bin/`, not `vendor/bin/`.
 
 <!-- AGENTS-GENERATED:START commands -->
 | Task | Command |
@@ -103,7 +103,7 @@ docs/            → agent-facing docs: ARCHITECTURE.md, exec-plans/
 
 ### Never Do
 - Commit secrets, credentials, or sensitive data
-- Modify `.build/`, vendor, or generated files
+- Modify `.Build/`, vendor, or generated files
 - Push directly to `main` — open a PR
 - Merge a PR before all review threads are resolved
 - Squash commits during merge or rebase unless the user explicitly asked
