@@ -3,9 +3,10 @@
 Release-only. 14.0.0 was tagged but never published: `release.yml` matched `v*`
 while this repository tags without a prefix, so the workflow did not fire for
 that tag and neither a GitHub release nor a TER publish was produced. Packagist
-has 14.0.0 through its own webhook. The trigger now matches both spellings, and
-this tag is what carries 14.0.0 to the places the missed run should have
-reached.
+has 14.0.0 through its own webhook. The trigger now matches both spellings.
+This tag publishes 14.0.1; what it contains is the 14.0.0 change set, which
+reaches GitHub Releases and the TER under the new number because the 14.0.0 tag
+can no longer be made to.
 
 No functional change since 14.0.0, measured rather than assumed: `Classes`,
 `Configuration` and `Resources` are identical to that tag. Everything in
