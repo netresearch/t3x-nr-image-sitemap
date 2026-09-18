@@ -1,3 +1,19 @@
+# 14.0.1
+
+Release-only. 14.0.0 was tagged but never published: `release.yml` matched `v*`
+while this repository tags without a prefix, so the workflow did not fire for
+that tag and neither a GitHub release nor a TER publish was produced. Packagist
+has 14.0.0 through its own webhook. The trigger now matches both spellings, and
+this tag is what carries 14.0.0 to the places the missed run should have
+reached.
+
+No functional change since 14.0.0, measured rather than assumed: `Classes`,
+`Configuration` and `Resources` are identical to that tag. Everything in
+between is CI, documentation and development dependencies synchronised from the
+organisation templates. In `composer.json` only `require-dev`, the build paths
+and the allowed plugins moved; the runtime requirement on `typo3/cms-core` and
+`typo3/cms-seo` stays `^13.4 || ^14.3`.
+
 # 14.0.0
 
 TYPO3 v14.3 LTS support. The v13 line stays supported: this release requires
