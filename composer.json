@@ -29,7 +29,7 @@
     "extra": {
         "typo3/cms": {
             "extension-key": "nr_image_sitemap",
-            "version": "14.0.0",
+            "version": "14.0.1",
             "web-dir": ".Build/public",
             "Package": {
                 "providesPackages": {}
