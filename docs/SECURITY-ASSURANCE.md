@@ -51,7 +51,7 @@ The four settings `rootPage`, `tables`, `excludedDoktypes` and `additionalWhere`
 |-------|-----|-----------------|
 | Anonymous visitor or crawler | Request the sitemap page type and every page of it (`cms-seo` puts 1000 page entries on each) | Pass input into a query: the provider reads no query parameter; it uses the site and the normalised parameters TYPO3 attaches to the request, and the language of the TYPO3 context (`generateItems()`, `ImageFileReferenceRepository::getLanguageUid()`) |
 | Logged-in frontend user | Request the sitemap; pages below the root page that their groups may see are included | See pages below the root page their groups may not see (`getPageIdsRecursive()`) |
-| Editor | Put files on pages and content elements and give them titles and captions, which then appear in the sitemap | Inject markup or break the XML through a title or caption (Fluid escaping, test above) |
+| Editor | Put files on pages and content elements and give them titles and captions, which then appear in the sitemap | Inject markup through a title or caption (Fluid escaping, test above) |
 | Integrator or administrator with access to TypoScript | Change the four settings above, including raw SQL in `additionalWhere` | Nothing is enforced against this role: it is trusted |
 
 ## Trust boundaries
@@ -84,11 +84,12 @@ Users can expect:
 
 - **Read-only operation.** The extension changes no data and calls no external service.
 - **Only published content from the configured page tree.** Deleted, hidden, timed-out and workspace records are not listed, and pages below the root page are filtered for the frontend user of the request, as described above.
-- **Well-formed, escaped XML** for any title or caption an editor enters.
+- **Escaped XML.** Markup characters (`<`, `>`, `&`, quotes) in a title or caption an editor enters are escaped, so they cannot add elements to the sitemap.
 
 Users cannot expect:
 
 - **Protection against the TypoScript configuration.** `additionalWhere` is raw SQL, and `rootPage` and `tables` decide what becomes public. Review who can edit the site's TypoScript.
 - **A sitemap scoped to the requesting site.** The shipped constant sets `rootPage = 1`; on an installation with several sites, set `rootPage` per site, or empty it so the site's root page is used (`generateItems()`).
 - **Confidentiality of what is listed.** The sitemap is public by design. Every file that passes the filters is listed with its URL, title and caption; do not rely on the sitemap to hide files that are reachable on their own.
+- **Well-formed XML for every character.** `htmlspecialchars()` escapes markup but passes control characters through; a title or caption containing one that XML 1.0 forbids (for example U+000B) makes the sitemap unparsable.
 - **Bounded cost per request.** On each uncached request the provider loads all matching references and runs one existence query per reference before `cms-seo` splits the result into sitemap pages of 1000 page entries (`findAllImages()`).
