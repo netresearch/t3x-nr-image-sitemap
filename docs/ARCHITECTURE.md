@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-FileCopyrightText: Netresearch DTT GmbH -->
 # Architecture
 
 Agent-facing component map for `nr_image_sitemap`. Verified against the source on 2026-08-19 — if code and this file disagree, the code wins; fix this file in the same PR.
