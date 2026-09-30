@@ -31,7 +31,7 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  * The image file reference repository.
  *
  * @author  Rico Sonntag <rico.sonntag@netresearch.de>
- * @license Netresearch https://www.netresearch.de
+ * @license AGPL-3.0-or-later https://www.gnu.org/licenses/agpl-3.0.html
  *
  * @see    https://www.netresearch.de
  */
