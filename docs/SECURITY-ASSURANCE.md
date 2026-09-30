@@ -2,7 +2,7 @@
 <!-- SPDX-FileCopyrightText: Netresearch DTT GmbH -->
 # Security assurance
 
-What users of `nr_image_sitemap` can and cannot expect in terms of security, and the argument for it: which records and files end up in the public image sitemap, how the output is encoded, which configuration the extension trusts, the threat model, trust boundaries, the design principles applied and how common weaknesses are countered. Every claim names the file that implements it or the test that checks it. Components and data flow: [ARCHITECTURE.md](ARCHITECTURE.md). Vulnerability reporting: [SECURITY.md](../SECURITY.md).
+What users of `nr_image_sitemap` can and cannot expect in terms of security, and the argument for it: which records and files end up in the public image sitemap, how the output is encoded, which configuration the extension trusts, the threat model, trust boundaries, the design principles applied and how common weaknesses are countered. Every claim names the file that implements it or the test that checks it. Components and data flow: [ARCHITECTURE.md](https://github.com/netresearch/t3x-nr-image-sitemap/blob/main/docs/ARCHITECTURE.md) (in the repository; release archives leave it out). Vulnerability reporting: [SECURITY.md](../SECURITY.md).
 
 The document describes the code on `main`. Statements about TYPO3 behaviour were read in TYPO3 14.3.7 (the version a `composer install` resolved on 2026-09-30) and in the tag `v13.4.35` of TYPO3 13.4, the two LTS versions the extension supports (`composer.json`).
 
@@ -65,7 +65,7 @@ The four settings `rootPage`, `tables`, `excludedDoktypes` and `additionalWhere`
 - **Least privilege.** The extension only reads, has no backend part and no endpoint of its own; it adds one frontend page type that `cms-seo` renders.
 - **Economy of mechanism.** Selection is one query plus an existence check per reference; visibility rules come from the TYPO3 restriction containers and `PageRepository` instead of hand-written conditions, apart from the workspace and `missing` filters.
 - **Defence in depth.** Page visibility is checked in the page list, for pages below the root page, and again in the restricted join; reference visibility is checked in the query and again in the Extbase query; the visibility of the record a reference belongs to is checked by the existence check.
-- **Secure defaults.** The shipped constants exclude pages marked "noindex", pages with a canonical link, and the doktypes 3, 4, 6, 7, 199, 254 and 255: external links, shortcuts, the backend user section, mount points, spacers, folders and the recycler (`constants.typoscript`).
+- **Secure defaults.** The shipped constants exclude pages marked "noindex", pages with a canonical link, and the doktypes 3, 4, 6, 7, 199 and 254: external links, shortcuts, the backend user section, mount points, spacers and folders (`constants.typoscript`). The list also names 255, the former recycler doktype, which TYPO3 13.0 removed; on the supported TYPO3 versions no page type has that value.
 - **Fail safe.** A reference whose foreign table does not exist, whose record is gone, or whose file is missing is left out rather than listed (`findRecordByForeignUid()`, `getAllRecords()`).
 
 ## Common weaknesses
