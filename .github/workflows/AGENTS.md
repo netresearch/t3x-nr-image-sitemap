@@ -34,7 +34,6 @@ Every workflow here is a thin caller of a central reusable in `netresearch/.gith
 ```
 .github/
   template.yaml     → drift-governance manifest (template + intentional-drift list)
-  dependabot.yml    → dependency update config
   labeler.yml       → label rules used by labeler workflow
   workflows/        → thin callers only (see Key Files above)
 ```
