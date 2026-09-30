@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-FileCopyrightText: Netresearch DTT GmbH
+
 .PHONY: help cgl cgl-fix phpstan rector
 
 help: ## Show this help

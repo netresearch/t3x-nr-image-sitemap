@@ -3,6 +3,9 @@
 /*
  * This file is part of the package netresearch/nr-image-sitemap.
  *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ * SPDX-FileCopyrightText: Netresearch DTT GmbH
+ *
  * For the full copyright and license information, please read the
  * LICENSE file that was distributed with this source code.
  */
@@ -28,7 +31,7 @@ use TYPO3\CMS\Seo\XmlSitemap\Exception\MissingConfigurationException;
  * Generate sitemap for images.
  *
  * @author  Rico Sonntag <rico.sonntag@netresearch.de>
- * @license Netresearch https://www.netresearch.de
+ * @license AGPL-3.0-or-later https://www.gnu.org/licenses/agpl-3.0.html
  *
  * @see    https://www.netresearch.de
  */

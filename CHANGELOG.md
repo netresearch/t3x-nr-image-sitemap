@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-FileCopyrightText: Netresearch DTT GmbH -->
 # 14.0.1
 
 Release-only. 14.0.0 was tagged but never published: `release.yml` matched `v*`

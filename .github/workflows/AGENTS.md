@@ -1,3 +1,5 @@
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-FileCopyrightText: Netresearch DTT GmbH -->
 <!-- Managed by agent: keep sections and order; edit content, not structure. Last updated: 2026-08-19 -->
 
 # AGENTS.md — workflows
@@ -32,7 +34,6 @@ Every workflow here is a thin caller of a central reusable in `netresearch/.gith
 ```
 .github/
   template.yaml     → drift-governance manifest (template + intentional-drift list)
-  dependabot.yml    → dependency update config
   labeler.yml       → label rules used by labeler workflow
   workflows/        → thin callers only (see Key Files above)
 ```

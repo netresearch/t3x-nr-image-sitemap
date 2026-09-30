@@ -1,0 +1,31 @@
+"pages"
+,"uid","pid","doktype","title","slug","is_siteroot","deleted","hidden","endtime"
+,1,0,1,"Root","/",1,0,0,0
+,2,1,1,"Hidden page","/hidden",0,0,1,0
+,3,1,1,"Deleted page","/deleted",0,1,0,0
+,4,1,1,"Expired page","/expired",0,0,0,946684800
+"tt_content"
+,"uid","pid","header","deleted","hidden"
+,1,1,"Visible content element",0,0
+,2,1,"Hidden content element",0,1
+,3,1,"Deleted content element",1,0
+,4,2,"Visible content element on the hidden page",0,0
+"sys_file_storage"
+,"uid","pid","name","driver","is_default","is_public","is_writable","is_browsable","is_online","configuration"
+,1,0,"fileadmin","Local",1,1,1,1,1,"<T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""basePath""><value index=""vDEF"">fileadmin/</value></field><field index=""pathType""><value index=""vDEF"">relative</value></field></language></sheet></data></T3FlexForms>"
+"sys_file"
+,"uid","pid","storage","type","missing","identifier","extension","mime_type","name","size"
+,1,0,1,2,0,"/user_upload/image-one.jpg","jpg","image/jpeg","image-one.jpg",1024
+"sys_file_reference"
+,"uid","pid","uid_local","uid_foreign","tablenames","fieldname","sys_language_uid","t3ver_wsid","deleted","hidden","title","description"
+,1,1,1,1,"pages","media",0,0,0,0,"Live reference on a visible page",""
+,2,2,1,2,"pages","media",0,0,0,0,"Reference on a hidden page",""
+,3,3,1,3,"pages","media",0,0,0,0,"Reference on a deleted page",""
+,4,4,1,4,"pages","media",0,0,0,0,"Reference on an expired page",""
+,5,1,1,1,"pages","media",0,0,0,1,"Hidden reference",""
+,6,1,1,1,"pages","media",0,0,1,0,"Deleted reference",""
+,7,1,1,1,"pages","media",0,1,0,0,"Workspace version of a reference",""
+,8,1,1,1,"tt_content","image",0,0,0,0,"Reference from a visible content element",""
+,9,1,1,2,"tt_content","image",0,0,0,0,"Reference from a hidden content element",""
+,10,1,1,3,"tt_content","image",0,0,0,0,"Reference from a deleted content element",""
+,11,2,1,4,"tt_content","image",0,0,0,0,"Reference from a visible content element on a hidden page",""

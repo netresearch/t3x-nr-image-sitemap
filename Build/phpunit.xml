@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <!--
+    SPDX-License-Identifier: AGPL-3.0-or-later
+    SPDX-FileCopyrightText: Netresearch DTT GmbH
+-->
+<!--
     Unit test suite setup for netresearch/nr-image-sitemap.
 
     Adapted from typo3/testing-framework Resources/Core/Build/UnitTests.xml.

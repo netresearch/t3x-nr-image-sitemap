@@ -1,1 +1,4 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-FileCopyrightText: Netresearch DTT GmbH
+
 @import 'EXT:nr_image_sitemap/Configuration/TypoScript/constants.typoscript'
