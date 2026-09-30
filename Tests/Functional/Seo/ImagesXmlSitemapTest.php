@@ -14,6 +14,9 @@ declare(strict_types=1);
 
 namespace Netresearch\NrImageSitemap\Tests\Functional\Seo;
 
+use DOMDocument;
+use DOMNodeList;
+use DOMXPath;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Core\Environment;
@@ -102,6 +105,64 @@ final class ImagesXmlSitemapTest extends FunctionalTestCase
 
         // The text file reference must not appear.
         self::assertStringNotContainsString('readme.txt', $body);
+    }
+
+    /**
+     * Editor-supplied titles and captions reach the XML as text: markup in them is
+     * escaped, the document stays well-formed and the values read back unchanged.
+     * The licence notice of the template stays out of the output.
+     */
+    #[Test]
+    public function theImageSitemapEscapesTitlesAndCaptions(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Database/SpecialCharacters.csv');
+
+        $response = $this->executeFrontendSubRequest(
+            new InternalRequest($this->resolveImagesSitemapUrl()),
+        );
+
+        self::assertSame(200, $response->getStatusCode());
+
+        $body = (string) $response->getBody();
+
+        self::assertStringStartsWith('<?xml', $body);
+        self::assertStringNotContainsString('SPDX', $body);
+        self::assertStringNotContainsString('<script', $body);
+        self::assertStringNotContainsString('<b>', $body);
+
+        $document                  = new DOMDocument();
+        $previousUseInternalErrors = libxml_use_internal_errors(true);
+        $loaded                    = $document->loadXML($body);
+        $errors                    = libxml_get_errors();
+        libxml_clear_errors();
+        libxml_use_internal_errors($previousUseInternalErrors);
+
+        self::assertTrue($loaded, 'The sitemap is not well-formed XML.');
+        self::assertSame([], $errors);
+
+        // The namespace URI is read from the document rather than spelled out, for the
+        // reason given in theImageSitemapRendersTheReferencedImages().
+        $xpath = new DOMXPath($document);
+        $xpath->registerNamespace('image', (string) $document->documentElement?->lookupNamespaceURI('image'));
+
+        self::assertContains('Tom & Jerry <script>alert(1)</script>', $this->textContentsOf($xpath, '//image:title'));
+        self::assertContains('"Quoted" <b>caption</b> & more', $this->textContentsOf($xpath, '//image:caption'));
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function textContentsOf(DOMXPath $xpath, string $expression): array
+    {
+        $nodes = $xpath->query($expression);
+        self::assertInstanceOf(DOMNodeList::class, $nodes);
+
+        $contents = [];
+        foreach ($nodes as $node) {
+            $contents[] = $node->textContent;
+        }
+
+        return $contents;
     }
 
     /**

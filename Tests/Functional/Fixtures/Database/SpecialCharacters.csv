@@ -1,0 +1,6 @@
+"sys_file"
+,"uid","pid","storage","type","missing","identifier","extension","mime_type","name","size"
+,5,0,1,2,0,"/user_upload/image-special.jpg","jpg","image/jpeg","image-special.jpg",1024
+"sys_file_reference"
+,"uid","pid","uid_local","uid_foreign","tablenames","fieldname","sys_language_uid","t3ver_wsid","deleted","hidden","title","description"
+,5,1,5,1,"pages","media",0,0,0,0,"Tom & Jerry <script>alert(1)</script>","""Quoted"" <b>caption</b> & more"
