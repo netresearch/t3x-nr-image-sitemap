@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-FileCopyrightText: Netresearch DTT GmbH
+
+# Keep development, CI and agent files out of release archives
+# (git archive in the release workflow and the Composer dist archive).
+/.github/               export-ignore
+/Build/                 export-ignore
+/Tests/                 export-ignore
+/docs/ARCHITECTURE.md   export-ignore
+/docs/exec-plans/       export-ignore
+/.bestpractices.json    export-ignore
+/.gitattributes         export-ignore
+/.gitignore             export-ignore
+/.gitleaks.toml         export-ignore
+/CONTRIBUTING.md        export-ignore
+/Makefile               export-ignore
+/captainhook.json       export-ignore
+/renovate.json          export-ignore
+# Agent instructions, at every level of the tree.
+AGENTS.md               export-ignore
+CLAUDE.md               export-ignore
