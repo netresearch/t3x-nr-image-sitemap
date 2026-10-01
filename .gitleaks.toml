@@ -2,6 +2,11 @@
 # SPDX-FileCopyrightText: Netresearch DTT GmbH
 
 # Gitleaks configuration — allowlist for false positives
+# A config file replaces the built-in rule set unless it extends it; without
+# this block the scanner loads no detection rules at all.
+[extend]
+useDefault = true
+
 [allowlist]
   paths = [
     'vendor/',
