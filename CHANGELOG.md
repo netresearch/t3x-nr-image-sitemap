@@ -1,5 +1,46 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 <!-- SPDX-FileCopyrightText: Netresearch DTT GmbH -->
+# 14.0.2
+
+Security and correctness fixes for the image sitemap, for TYPO3 13.4 and 14.3.
+The fixes are not backported: earlier versions, including the TYPO3 11 and 12
+lines, keep the previous behaviour (`SECURITY.md` supports the latest release
+only).
+
+## Security
+
+- The sitemap lists an image only when the record it belongs to is visible to
+  the request, including the record's frontend user groups (`fe_group`), and
+  only when every page on the way to it may be served to the request: the
+  page itself, pages above it that pass a restriction on to their subpages
+  (`extendToSubpages`), and backend user sections for requests without a
+  backend login. This also applies to the configured start page and to pages
+  reached through a mount point.
+- Files of a storage that TYPO3 does not serve publicly are not listed.
+
+## Fixes
+
+- A public file URL that already names a host (for example a CDN) is used as
+  it is, a scheme-relative one gets the request's scheme, and a URL with a
+  leading slash gets the request's scheme and host, so the site path of a site
+  in a subdirectory is no longer doubled. The template now renders
+  `{image.location}`; a template override that still renders
+  `{item.baseUrl}{image.publicUrl}` keeps the previous behaviour.
+- An empty `tables` setting throws the `MissingConfigurationException` meant
+  for it instead of producing an empty sitemap.
+
+## Other changes
+
+- Release archives built with `git archive` (GitHub archives and the Composer
+  dist) no longer contain development files such as `Build/`, `Tests/` and
+  `.github/` (`.gitattributes`).
+- The `@license` docblocks in `Classes/` name `AGPL-3.0-or-later`, as
+  `composer.json` does.
+
+CI and documentation were synchronised with the organisation templates, and
+`CONTRIBUTING.md`, `docs/SECURITY-ASSURANCE.md` and `docs/ARCHITECTURE.md`
+describe the checks and the selection rules as coded.
+
 # 14.0.1
 
 Release-only. 14.0.0 was tagged but never published: `release.yml` matched `v*`
