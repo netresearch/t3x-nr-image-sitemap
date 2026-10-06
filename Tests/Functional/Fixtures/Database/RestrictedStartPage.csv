@@ -1,0 +1,15 @@
+"pages"
+,"uid","pid","doktype","title","slug","is_siteroot","deleted","hidden","fe_group"
+,5,1,1,"Members area","/members",0,0,0,"1"
+,6,5,1,"Public page below the members area","/members/public",0,0,0,""
+"tt_content"
+,"uid","pid","header","deleted","hidden","fe_group"
+,5,5,"Content element on the members start page",0,0,""
+"sys_file"
+,"uid","pid","storage","type","missing","identifier","extension","mime_type","name","size"
+,5,0,1,2,0,"/user_upload/members-start.jpg","jpg","image/jpeg","members-start.jpg",1024
+,6,0,1,2,0,"/user_upload/public-below.jpg","jpg","image/jpeg","public-below.jpg",1024
+"sys_file_reference"
+,"uid","pid","uid_local","uid_foreign","tablenames","fieldname","sys_language_uid","t3ver_wsid","deleted","hidden","title","description"
+,5,5,5,5,"tt_content","image",0,0,0,0,"Image in a content element on the members start page",""
+,6,6,6,6,"pages","media",0,0,0,0,"Image on the public page",""

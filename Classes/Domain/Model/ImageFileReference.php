@@ -32,6 +32,18 @@ final class ImageFileReference extends FileReference
 
     protected string $tablenames = '';
 
+    /**
+     * Absolute URL of the frontend site root, for example `https://example.org/sub/`;
+     * not persisted, set by the sitemap data provider from the current request.
+     */
+    protected string $siteUrl = '';
+
+    /**
+     * Scheme and host of the current request, for example `https://example.org`;
+     * not persisted, set by the sitemap data provider.
+     */
+    protected string $requestHost = '';
+
     public function getTitle(): string
     {
         if ($this->title !== '' && $this->title !== '0') {
@@ -65,9 +77,10 @@ final class ImageFileReference extends FileReference
      * Prefixing the site URL is deliberately not done here: it used to be read from
      * GeneralUtility::getIndpEnv('TYPO3_SITE_URL'), which is deprecated since TYPO3 v14.3
      * in favour of NormalizedParams taken from the PSR-7 request, and a domain model has
-     * no access to that request. The composition now happens in
-     * {@see \Netresearch\NrImageSitemap\Seo\ImagesXmlSitemapDataProvider}, which passes
-     * the site URL to the template as `item.baseUrl`.
+     * no access to that request. The data provider
+     * {@see \Netresearch\NrImageSitemap\Seo\ImagesXmlSitemapDataProvider} sets the site URL
+     * of the request through {@see self::setBaseUrls()}, and the template renders
+     * {@see self::getLocation()}.
      */
     public function getPublicUrl(): string
     {
@@ -77,5 +90,43 @@ final class ImageFileReference extends FileReference
     public function getTablenames(): string
     {
         return $this->tablenames;
+    }
+
+    public function setBaseUrls(string $siteUrl, string $requestHost): void
+    {
+        $this->siteUrl     = $siteUrl;
+        $this->requestHost = $requestHost;
+    }
+
+    /**
+     * Returns the absolute URL of the referenced file for the sitemap.
+     *
+     * A public URL that already names a scheme and host (a CDN or another storage) is used
+     * as is; a scheme-relative one gets the scheme of the request.
+     * A URL with a leading slash is relative to the host and gets the scheme and host of
+     * the request; TYPO3 adds the site path itself when the site lives in a
+     * subdirectory. Any other URL is relative to the site root and gets the site URL.
+     */
+    public function getLocation(): string
+    {
+        $publicUrl = (string) $this->getOriginalResource()->getPublicUrl();
+
+        if ($publicUrl === '' || preg_match('#^[a-z][a-z0-9+.-]*://#i', $publicUrl) === 1) {
+            return $publicUrl;
+        }
+
+        // Scheme-relative URL of another host (for example a CDN prefix): use the
+        // scheme of the request, as the sitemap protocol requires a full URL.
+        if (str_starts_with($publicUrl, '//')) {
+            $scheme = parse_url($this->requestHost, PHP_URL_SCHEME);
+
+            return (is_string($scheme) && $scheme !== '' ? $scheme : 'https') . ':' . $publicUrl;
+        }
+
+        if (str_starts_with($publicUrl, '/')) {
+            return rtrim($this->requestHost, '/') . $publicUrl;
+        }
+
+        return rtrim($this->siteUrl, '/') . '/' . $publicUrl;
     }
 }

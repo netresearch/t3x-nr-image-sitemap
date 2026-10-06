@@ -21,6 +21,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Seo\XmlSitemap\Exception\MissingConfigurationException;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -150,6 +151,105 @@ final class ImagesXmlSitemapTest extends FunctionalTestCase
     }
 
     /**
+     * The configured start page of the image sitemap is listed only when an anonymous
+     * visitor may see it: the content element on it is public, the page is not. The
+     * public pages below it are still listed.
+     */
+    #[Test]
+    public function theImageSitemapLeavesOutAStartPageRestrictedToAUserGroup(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Database/RestrictedStartPage.csv');
+        $this->setSitemapConstant('rootPage', '5');
+
+        $response = $this->executeFrontendSubRequest(
+            new InternalRequest($this->resolveImagesSitemapUrl()),
+        );
+
+        self::assertSame(200, $response->getStatusCode());
+
+        $body = (string) $response->getBody();
+
+        self::assertStringContainsString('public-below.jpg', $body);
+        self::assertStringNotContainsString('members-start.jpg', $body);
+    }
+
+    /**
+     * A start page that restricts its whole subtree (extendToSubpages) hides the pages
+     * below it as well, although they carry no restriction of their own.
+     */
+    #[Test]
+    public function theImageSitemapLeavesOutTheSubtreeOfAStartPageThatRestrictsIt(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Database/RestrictedStartPageTree.csv');
+        $this->setSitemapConstant('rootPage', '7');
+
+        // With no visible page left, the image sitemap has no entries, and cms-seo leaves
+        // it out of the sitemap index.
+        $index = (string) $this->executeFrontendSubRequest(
+            new InternalRequest('https://localhost/?type=1642072014'),
+        )->getBody();
+
+        self::assertStringContainsString('<sitemapindex', $index);
+        self::assertDoesNotMatchRegularExpression('#sitemap(%5D|\])?=images#', $index);
+    }
+
+    /**
+     * A page inside a backend user section is served only with a backend login, so its
+     * images stay out of the sitemap of an anonymous request.
+     */
+    #[Test]
+    public function theImageSitemapLeavesOutPagesInsideABackendUserSection(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Database/BackendUserSection.csv');
+        $this->setSitemapConstant('rootPage', '21');
+
+        $index = (string) $this->executeFrontendSubRequest(
+            new InternalRequest('https://localhost/?type=1642072014'),
+        )->getBody();
+
+        self::assertStringContainsString('<sitemapindex', $index);
+        self::assertDoesNotMatchRegularExpression('#sitemap(%5D|\])?=images#', $index);
+    }
+
+    /**
+     * A mount point makes TYPO3 list the pages of the mounted subtree; a page whose own
+     * root line runs through a backend user section stays out all the same.
+     */
+    #[Test]
+    public function theImageSitemapLeavesOutPagesReachedThroughAMountPointThatTheVisitorMayNotSee(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Database/BackendUserSection.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Database/MountPoint.csv');
+
+        $response = $this->executeFrontendSubRequest(
+            new InternalRequest($this->resolveImagesSitemapUrl()),
+        );
+
+        self::assertSame(200, $response->getStatusCode());
+
+        $body = (string) $response->getBody();
+
+        self::assertStringContainsString('image-one.jpg', $body);
+        self::assertStringNotContainsString('be-section-image.jpg', $body);
+    }
+
+    /**
+     * An empty table list is a configuration error, not an empty sitemap.
+     */
+    #[Test]
+    public function theImageSitemapReportsAnEmptyTableListAsMissingConfiguration(): void
+    {
+        $this->setSitemapConstant('tables', '');
+
+        $this->expectException(MissingConfigurationException::class);
+        $this->expectExceptionCode(1_652_249_698);
+
+        $this->executeFrontendSubRequest(
+            new InternalRequest($this->resolveImagesSitemapUrl()),
+        );
+    }
+
+    /**
      * @return list<string>
      */
     private function textContentsOf(DOMXPath $xpath, string $expression): array
@@ -182,6 +282,21 @@ final class ImagesXmlSitemapTest extends FunctionalTestCase
         );
 
         return html_entity_decode($matches['url'], ENT_QUOTES | ENT_XML1);
+    }
+
+    /**
+     * Overrides one constant of the image sitemap through a TypoScript record on the
+     * root page, which TYPO3 adds after the site set.
+     */
+    private function setSitemapConstant(string $name, string $value): void
+    {
+        $this->getConnectionPool()->getConnectionForTable('sys_template')->insert('sys_template', [
+            'pid'       => 1,
+            'title'     => 'Image sitemap test constants',
+            'root'      => 0,
+            'clear'     => 0,
+            'constants' => 'plugin.tx_nrimagesitemap.settings.xmlImagesSitemap.' . $name . ' = ' . $value,
+        ]);
     }
 
     private function writeSiteConfigurationWithImageSitemapSet(): void

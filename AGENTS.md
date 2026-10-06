@@ -79,7 +79,7 @@ docs/            → agent-facing docs: ARCHITECTURE.md, exec-plans/
 - **Default branch:** `main`
 - **Merge strategy:** merge
 - **Signed commits:** required
-- **Required checks (rulesets):** `All security checks`, `CodeQL`, `DCO`, `Opengrep OSS`, `betterleaks`, `ci / All CI checks`, `scorecard`, `zizmor`
+- **Required checks (rulesets):** `All security checks`, `CodeQL`, `DCO`, `Opengrep OSS`, `betterleaks`, `ci / All CI checks`, `zizmor`
 - **Active rulesets:** Copilot review for default branch, require-signed-commits, t3x-baseline, t3x-pull-request
 <!-- AGENTS-GENERATED:END repo-settings -->
 

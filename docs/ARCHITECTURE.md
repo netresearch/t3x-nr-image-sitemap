@@ -22,7 +22,7 @@ The extension adds one sitemap type to `typo3/cms-seo`: an XML image sitemap. It
 
 ## Data flow
 
-Frontend request with `typeNum=1642072014` → cms-seo sitemap rendering instantiates `ImagesXmlSitemapDataProvider` with the TypoScript `config` → provider resolves the root page (config override or site root) and its subtree via `PageRepository::getPageIdsRecursive` → `ImageFileReferenceRepository::findAllImages()` returns hydrated `ImageFileReference` models → provider groups them by page URI (md5 hash key) into `$this->items` → Fluid template `Sitemap/Images` renders the XML.
+Frontend request with `typeNum=1642072014` → cms-seo sitemap rendering instantiates `ImagesXmlSitemapDataProvider` with the TypoScript `config` → provider resolves the root page (config override or site root) and its subtree via `PageRepository::getPageIdsRecursive`, keeping only the pages whose root line grants access (`filterByRootLineAccess()`) → `ImageFileReferenceRepository::findAllImages()` returns hydrated `ImageFileReference` models → provider groups them by page URI (md5 hash key) into `$this->items` → Fluid template `Sitemap/Images` renders the XML.
 
 ## Dependency rules
 

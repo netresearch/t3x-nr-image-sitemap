@@ -22,6 +22,7 @@ use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryHelper;
+use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
 use TYPO3\CMS\Core\Resource\FileType;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
@@ -113,7 +114,13 @@ final class ImageFileReferenceRepository extends Repository
                 ->execute(),
         );
 
-        return $images;
+        // A file of a storage that TYPO3 does not serve publicly (is_public = 0, or a
+        // local storage outside the public directory) gets a signed download link as
+        // its public URL, which works for anyone holding it; such links are not published.
+        return array_values(array_filter(
+            $images,
+            static fn (ImageFileReference $image): bool => $image->getOriginalResource()->getStorage()->isPublic(),
+        ));
     }
 
     /**
@@ -211,7 +218,9 @@ final class ImageFileReferenceRepository extends Repository
     }
 
     /**
-     * Returns the UID of the record the foreign table related to or FALSE otherwise.
+     * Whether the record the file reference belongs to is visible in the frontend
+     * context of the current request: not deleted, not hidden, within its start and
+     * end time, and accessible to the current frontend user groups (fe_group).
      *
      * @throws Exception
      */
@@ -226,6 +235,7 @@ final class ImageFileReferenceRepository extends Repository
         }
 
         $queryBuilder = $connection->createQueryBuilder();
+        $queryBuilder->setRestrictions(new FrontendRestrictionContainer($this->context));
 
         return (bool) $queryBuilder
             ->select('uid')

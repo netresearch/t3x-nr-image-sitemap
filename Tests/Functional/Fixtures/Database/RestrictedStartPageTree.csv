@@ -1,0 +1,10 @@
+"pages"
+,"uid","pid","doktype","title","slug","is_siteroot","deleted","hidden","fe_group","extendToSubpages"
+,7,1,1,"Members area for the whole subtree","/members-tree",0,0,0,"1",1
+,8,7,1,"Page below the members area","/members-tree/below",0,0,0,"",0
+"sys_file"
+,"uid","pid","storage","type","missing","identifier","extension","mime_type","name","size"
+,8,0,1,2,0,"/user_upload/inherits-members.jpg","jpg","image/jpeg","inherits-members.jpg",1024
+"sys_file_reference"
+,"uid","pid","uid_local","uid_foreign","tablenames","fieldname","sys_language_uid","t3ver_wsid","deleted","hidden","title","description"
+,8,8,8,8,"pages","media",0,0,0,0,"Image below the members area",""

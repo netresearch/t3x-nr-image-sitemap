@@ -26,7 +26,7 @@ Every workflow here is a thin caller of a central reusable in `netresearch/.gith
 <!-- AGENTS-GENERATED:START setup -->
 ## Workflow files
 - Drift governance: `.github/template.yaml` declares `template: typo3-extension`; only `ci.yml` and `release.yml` are listed as intentional-drift. Everything else must stay byte-identical to the template — change it upstream in `netresearch/.github`, not here. New files (not present in the template) are not byte-compared.
-- Required checks on `main` (rulesets): `All security checks`, `CodeQL`, `DCO`, `Opengrep OSS`, `betterleaks`, `ci / All CI checks`, `scorecard`, `zizmor`.
+- Required checks on `main` (rulesets): `All security checks`, `CodeQL`, `DCO`, `Opengrep OSS`, `betterleaks`, `ci / All CI checks`, `zizmor`.
 <!-- AGENTS-GENERATED:END setup -->
 
 <!-- AGENTS-GENERATED:START structure -->

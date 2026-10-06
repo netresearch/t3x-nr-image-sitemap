@@ -63,6 +63,31 @@ final class ImageFileReferenceTest extends TestCase
         self::assertSame('', $subject->getPublicUrl());
     }
 
+    /**
+     * @return array<string, array{0: string, 1: string}>
+     */
+    public static function locationDataProvider(): array
+    {
+        return [
+            'site-relative url gets the site url'      => ['fileadmin/user_upload/image.jpg', 'https://example.org/sub/fileadmin/user_upload/image.jpg'],
+            'root-relative url gets the host'          => ['/sub/fileadmin/user_upload/image.jpg', 'https://example.org/sub/fileadmin/user_upload/image.jpg'],
+            'absolute url of another host stays as is' => ['https://cdn.example.net/images/image.jpg', 'https://cdn.example.net/images/image.jpg'],
+            'scheme-relative url gets the scheme'      => ['//cdn.example.net/images/image.jpg', 'https://cdn.example.net/images/image.jpg'],
+            'empty url stays empty'                    => ['', ''],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('locationDataProvider')]
+    public function getLocationReturnsAnAbsoluteUrlWithoutDoublingTheHost(string $originalUrl, string $expected): void
+    {
+        $subject = new ImageFileReference();
+        $subject->setOriginalResource($this->createOriginalResource(['getPublicUrl' => $originalUrl]));
+        $subject->setBaseUrls('https://example.org/sub/', 'https://example.org');
+
+        self::assertSame($expected, $subject->getLocation());
+    }
+
     #[Test]
     public function getTitleFallsBackToTheFilePropertyWhenTheReferenceHasNoOwnTitle(): void
     {
