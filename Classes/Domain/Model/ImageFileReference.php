@@ -101,7 +101,8 @@ final class ImageFileReference extends FileReference
     /**
      * Returns the absolute URL of the referenced file for the sitemap.
      *
-     * A public URL that already names a host (a CDN or another storage) is used as is.
+     * A public URL that already names a scheme and host (a CDN or another storage) is used
+     * as is; a scheme-relative one gets the scheme of the request.
      * A URL with a leading slash is relative to the host and gets the scheme and host of
      * the request; TYPO3 adds the site path itself when the site lives in a
      * subdirectory. Any other URL is relative to the site root and gets the site URL.
@@ -110,8 +111,16 @@ final class ImageFileReference extends FileReference
     {
         $publicUrl = (string) $this->getOriginalResource()->getPublicUrl();
 
-        if ($publicUrl === '' || preg_match('#^([a-z][a-z0-9+.-]*:)?//#i', $publicUrl) === 1) {
+        if ($publicUrl === '' || preg_match('#^[a-z][a-z0-9+.-]*://#i', $publicUrl) === 1) {
             return $publicUrl;
+        }
+
+        // Scheme-relative URL of another host (for example a CDN prefix): use the
+        // scheme of the request, as the sitemap protocol requires a full URL.
+        if (str_starts_with($publicUrl, '//')) {
+            $scheme = parse_url($this->requestHost, PHP_URL_SCHEME);
+
+            return (is_string($scheme) && $scheme !== '' ? $scheme : 'https') . ':' . $publicUrl;
         }
 
         if (str_starts_with($publicUrl, '/')) {

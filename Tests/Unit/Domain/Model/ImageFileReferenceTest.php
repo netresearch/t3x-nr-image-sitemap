@@ -69,11 +69,11 @@ final class ImageFileReferenceTest extends TestCase
     public static function locationDataProvider(): array
     {
         return [
-            'site-relative url gets the site url'       => ['fileadmin/user_upload/image.jpg', 'https://example.org/sub/fileadmin/user_upload/image.jpg'],
-            'root-relative url gets the host'           => ['/sub/fileadmin/user_upload/image.jpg', 'https://example.org/sub/fileadmin/user_upload/image.jpg'],
-            'absolute url of another host stays as is'  => ['https://cdn.example.net/images/image.jpg', 'https://cdn.example.net/images/image.jpg'],
-            'scheme-relative url of another host stays' => ['//cdn.example.net/images/image.jpg', '//cdn.example.net/images/image.jpg'],
-            'empty url stays empty'                     => ['', ''],
+            'site-relative url gets the site url'      => ['fileadmin/user_upload/image.jpg', 'https://example.org/sub/fileadmin/user_upload/image.jpg'],
+            'root-relative url gets the host'          => ['/sub/fileadmin/user_upload/image.jpg', 'https://example.org/sub/fileadmin/user_upload/image.jpg'],
+            'absolute url of another host stays as is' => ['https://cdn.example.net/images/image.jpg', 'https://cdn.example.net/images/image.jpg'],
+            'scheme-relative url gets the scheme'      => ['//cdn.example.net/images/image.jpg', 'https://cdn.example.net/images/image.jpg'],
+            'empty url stays empty'                    => ['', ''],
         ];
     }
 

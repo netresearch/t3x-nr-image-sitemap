@@ -42,6 +42,12 @@ use TYPO3\CMS\Seo\XmlSitemap\Exception\MissingConfigurationException;
  */
 final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
 {
+    /**
+     * Page type "Backend User Section": TYPO3 serves such a page and the pages below it
+     * only to a request with a backend login.
+     */
+    private const DOKTYPE_BACKEND_USER_SECTION = 6;
+
     private readonly ImageFileReferenceRepository $imageFileReferenceRepository;
 
     private readonly PageRepository $pageRepository;
@@ -165,7 +171,8 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
      * page itself nor the pages above it. The start page is kept only when the current
      * frontend user may see it (hidden, start/end time, fe_group); when it or a page above
      * it denies access and passes that on to its subpages (extendToSubpages), no page of
-     * the tree is listed.
+     * the tree is listed. The same holds for a backend user section in the root line
+     * when the request has no backend login, as TYPO3 does when it serves a page.
      *
      * @param array<int, int> $pageIds
      *
@@ -179,10 +186,15 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
             return [];
         }
 
-        $context = GeneralUtility::makeInstance(Context::class);
-        $voter   = GeneralUtility::makeInstance(RecordAccessVoter::class);
+        $context         = GeneralUtility::makeInstance(Context::class);
+        $voter           = GeneralUtility::makeInstance(RecordAccessVoter::class);
+        $backendLoggedIn = (bool) $context->getPropertyFromAspect('backend.user', 'isLoggedIn', false);
 
         foreach ($rootLine as $page) {
+            if (!$backendLoggedIn && (int) ($page['doktype'] ?? 0) === self::DOKTYPE_BACKEND_USER_SECTION) {
+                return [];
+            }
+
             if ((int) ($page['uid'] ?? 0) !== $rootPageId) {
                 if (!$voter->accessGrantedForPageInRootLine($page, $context)) {
                     return [];

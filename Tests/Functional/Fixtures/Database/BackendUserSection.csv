@@ -1,0 +1,10 @@
+"pages"
+,"uid","pid","doktype","title","slug","is_siteroot","deleted","hidden"
+,20,1,6,"Backend user section","/be-section",0,0,0
+,21,20,1,"Page inside the backend user section","/be-section/inside",0,0,0
+"sys_file"
+,"uid","pid","storage","type","missing","identifier","extension","mime_type","name","size"
+,20,0,1,2,0,"/user_upload/be-section-image.jpg","jpg","image/jpeg","be-section-image.jpg",1024
+"sys_file_reference"
+,"uid","pid","uid_local","uid_foreign","tablenames","fieldname","sys_language_uid","t3ver_wsid","deleted","hidden","title","description"
+,20,21,20,21,"pages","media",0,0,0,0,"Image inside the backend user section",""

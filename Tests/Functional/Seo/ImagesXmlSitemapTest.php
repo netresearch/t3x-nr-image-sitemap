@@ -194,6 +194,24 @@ final class ImagesXmlSitemapTest extends FunctionalTestCase
     }
 
     /**
+     * A page inside a backend user section is served only with a backend login, so its
+     * images stay out of the sitemap of an anonymous request.
+     */
+    #[Test]
+    public function theImageSitemapLeavesOutPagesInsideABackendUserSection(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Database/BackendUserSection.csv');
+        $this->setSitemapConstant('rootPage', '21');
+
+        $index = (string) $this->executeFrontendSubRequest(
+            new InternalRequest('https://localhost/?type=1642072014'),
+        )->getBody();
+
+        self::assertStringContainsString('<sitemapindex', $index);
+        self::assertDoesNotMatchRegularExpression('#sitemap(%5D|\])?=images#', $index);
+    }
+
+    /**
      * An empty table list is a configuration error, not an empty sitemap.
      */
     #[Test]
