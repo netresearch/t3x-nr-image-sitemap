@@ -18,20 +18,20 @@ It only reads. `Classes/Domain/Repository/ImageFileReferenceRepository.php` runs
 
 | Condition | Where |
 |-----------|-------|
-| The reference sits on the configured root page (`rootPage`, else the site's root page) or on a page below it that the frontend user of the request may see. Pages below the root page come from `PageRepository::getPageIdsRecursive()` of TYPO3, which drops deleted, hidden, not yet started or expired pages and pages whose `fe_group` the user does not have, and does not descend below pages that hide their subpages (`extendToSubpages`) | `ImagesXmlSitemapDataProvider.php` |
+| The reference sits on the configured root page (`rootPage`, else the site's root page) or on a page below it, and the frontend user of the request may see that page. Pages below the root page come from `PageRepository::getPageIdsRecursive()` of TYPO3, which drops deleted, hidden, not yet started or expired pages and pages whose `fe_group` the user does not have, and does not descend below pages that hide their subpages (`extendToSubpages`). That method always returns the root page itself, so the provider keeps the root page only when `PageRepository::getPage()` returns it for the current user | `ImagesXmlSitemapDataProvider.php` |
 | The page the reference sits on is not deleted, hidden, not yet started or expired. The join on `pages` is a `leftJoin()`, and the TYPO3 `QueryBuilder` puts its default restrictions for the joined table into the join condition, so such a page leaves `p.uid` empty and fails the `p.uid IN (…)` filter | `ImageFileReferenceRepository::getAllRecords()` |
 | The reference itself is not deleted or hidden (the default restrictions of the query on `sys_file_reference`) | `getAllRecords()` |
 | The reference is a live record (`t3ver_wsid = 0`); workspace versions are never listed | `getAllRecords()` |
-| The file exists (`f.missing = 0`) and is of type image (`FileType::IMAGE`) | `getAllRecords()`, `generateItems()` |
+| The file exists (`f.missing = 0`), is of type image (`FileType::IMAGE`) and lies in a public storage (`sys_file_storage.is_public = 1`). The public URL of a file in a non-public storage is a download link that works for anyone holding it, so such files are not listed | `getAllRecords()`, `generateItems()` |
 | The reference belongs to one of the configured tables (`tables`, default `pages, tt_content`) and is in the language of the request | `getAllRecords()`, `Configuration/TypoScript/constants.typoscript` |
 | The page's doktype is not excluded (`excludedDoktypes`, default `3, 4, 6, 7, 199, 254, 255`) and the page matches `additionalWhere` (default `no_index = 0 AND canonical_link = ''`, which leaves out pages marked "noindex" and pages with a canonical link to elsewhere) | `getAllRecords()`, `constants.typoscript` |
-| The record the reference belongs to still exists and is neither deleted nor hidden, nor outside its start and end time | `ImageFileReferenceRepository::findRecordByForeignUid()` |
+| The record the reference belongs to still exists, is neither deleted nor hidden, nor outside its start and end time, and its `fe_group` admits the frontend user groups of the request (TYPO3's `FrontendRestrictionContainer` with the request's `Context`) | `ImageFileReferenceRepository::findRecordByForeignUid()` |
 
 The references that pass are loaded as `ImageFileReference` models through an Extbase query (`findAllImages()`), which applies the frontend enable fields of `sys_file_reference` a second time.
 
-`Tests/Functional/Domain/Repository/ImageFileReferenceRepositoryVisibilityTest.php` checks the repository part: from a page list that includes a hidden, a deleted and an expired page, only the live, visible reference on the visible page and the one from a visible content element are returned; hidden and deleted references, a workspace version, references on the three pages and references from hidden and deleted content elements are not.
+`Tests/Functional/Domain/Repository/ImageFileReferenceRepositoryVisibilityTest.php` checks the repository part: from a page list that includes a hidden, a deleted and an expired page, only the live, visible reference on the visible page and the ones from content elements the request's user groups may see are returned; hidden and deleted references, a workspace version, references on the three pages, a reference to a file in a non-public storage and references from hidden and deleted content elements are not. For an anonymous request a content element restricted to a user group is left out and one hidden at login is listed; for a request of a group member it is the other way round. `theImageSitemapLeavesOutAStartPageRestrictedToAUserGroup` in `Tests/Functional/Seo/ImagesXmlSitemapTest.php` checks that a group-restricted root page is left out while the public page below it is listed.
 
-For each selected reference the sitemap contains the absolute URL of the page (built by the TYPO3 `LinkFactory` and the site base from `SiteFinder`), the public URL of the file, and the title and description of the reference, falling back to the title and description of the file's metadata (`Classes/Domain/Model/ImageFileReference.php`).
+For each selected reference the sitemap contains the absolute URL of the page (built by the TYPO3 `LinkFactory` and the site base from `SiteFinder`), the absolute URL of the file (`ImageFileReference::getLocation()`: a public URL that already names a host is used as it is, a site-relative one is prefixed with the site URL of the request), and the title and description of the reference, falling back to the title and description of the file's metadata (`Classes/Domain/Model/ImageFileReference.php`).
 
 ## Output encoding
 
@@ -44,13 +44,14 @@ The four settings `rootPage`, `tables`, `excludedDoktypes` and `additionalWhere`
 - `additionalWhere` is a raw SQL fragment and is added to the query as it is (`getAllRecords()`, documented at `findAllImages()`). Whoever can change it can change the query.
 - `tables` decides which tables' references are listed. The table names are bound as a parameter in the filter, and `findRecordByForeignUid()` uses a table name only after `tablesExist()` confirmed it, through the quoting `QueryBuilder::from()`.
 - `rootPage` is cast to an integer and `excludedDoktypes` is split with `GeneralUtility::intExplode()` (`generateItems()`).
+- An empty `tables` list is a configuration error: `generateItems()` throws `MissingConfigurationException` (`theImageSitemapReportsAnEmptyTableListAsMissingConfiguration`).
 
 ## Threat model
 
 | Actor | Can | Cannot, and why |
 |-------|-----|-----------------|
 | Anonymous visitor or crawler | Request the sitemap page type and every page of it (`cms-seo` puts 1000 page entries on each) | Pass input into a query: the provider reads no query parameter; it uses the site and the normalised parameters TYPO3 attaches to the request, and the language of the TYPO3 context (`generateItems()`, `ImageFileReferenceRepository::getLanguageUid()`) |
-| Logged-in frontend user | Request the sitemap; pages below the root page that their groups may see are included | See pages below the root page their groups may not see (`getPageIdsRecursive()`) |
+| Logged-in frontend user | Request the sitemap; pages and records that their groups may see are included | See pages or records their groups may not see (`getPageIdsRecursive()`, `getPage()`, `findRecordByForeignUid()`) |
 | Editor | Put files on pages and content elements and give them titles and captions, which then appear in the sitemap | Inject markup through a title or caption (Fluid escaping, test above) |
 | Integrator or administrator with access to TypoScript | Change the four settings above, including raw SQL in `additionalWhere` | Nothing is enforced against this role: it is trusted |
 
@@ -74,7 +75,7 @@ The four settings `rootPage`, `tables`, `excludedDoktypes` and `additionalWhere`
 |----------|---------|----------|
 | SQL injection (CWE-89) | Page IDs, file types, table names, doktypes, language and foreign UID are bound with `createNamedParameter()`; table names used as identifiers are checked with `tablesExist()` and quoted by `QueryBuilder`. `additionalWhere` is trusted configuration, see above | `ImageFileReferenceRepository.php` |
 | XML/markup injection, XSS in sitemap consumers (CWE-79, CWE-91) | Fluid escaping of every output value | `Images.xml`, `theImageSitemapEscapesTitlesAndCaptions` |
-| Exposure of unpublished content (CWE-200) | Hidden, deleted, timed and workspace records are filtered as listed above | `ImageFileReferenceRepositoryVisibilityTest` |
+| Exposure of unpublished or access-restricted content (CWE-200) | Hidden, deleted, timed and workspace records, records and pages the request's user groups may not see, and files of non-public storages are filtered as listed above | `ImageFileReferenceRepositoryVisibilityTest`, `ImagesXmlSitemapTest` |
 | Vulnerable dependencies (CWE-1395) | Composer Audit and Dependency Review run on every pull request (`CONTRIBUTING.md`, "Governance and policies") | `.github/workflows/checks.yml` |
 | Unsafe code patterns in the extension | PHPStan with the rule sets of `netresearch/typo3-ci-workflows`, Rector and Opengrep run on every pull request | `Build/phpstan.neon`, `.github/workflows/ci.yml`, `checks.yml` |
 
@@ -83,7 +84,7 @@ The four settings `rootPage`, `tables`, `excludedDoktypes` and `additionalWhere`
 Users can expect:
 
 - **Read-only operation.** The extension changes no data and calls no external service.
-- **Only published content from the configured page tree.** Deleted, hidden, timed-out and workspace records are not listed, and pages below the root page are filtered for the frontend user of the request, as described above.
+- **Only published content from the configured page tree.** Deleted, hidden, timed-out and workspace records are not listed, pages and records are filtered for the frontend user groups of the request, and files of non-public storages are not listed, as described above.
 - **Escaped XML.** Markup characters (`<`, `>`, `&`, quotes) in a title or caption an editor enters are escaped, so they cannot add elements to the sitemap.
 
 Users cannot expect:

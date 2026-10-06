@@ -150,6 +150,68 @@ final class ImagesXmlSitemapTest extends FunctionalTestCase
     }
 
     /**
+     * The configured start page of the image sitemap is listed only when an anonymous
+     * visitor may see it: the content element on it is public, the page is not. The
+     * public pages below it are still listed.
+     */
+    #[Test]
+    public function theImageSitemapLeavesOutAStartPageRestrictedToAUserGroup(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Database/RestrictedStartPage.csv');
+        $this->setSitemapConstant('rootPage', '5');
+
+        $response = $this->executeFrontendSubRequest(
+            new InternalRequest($this->resolveImagesSitemapUrl()),
+        );
+
+        self::assertSame(200, $response->getStatusCode());
+
+        $body = (string) $response->getBody();
+
+        self::assertStringContainsString('public-below.jpg', $body);
+        self::assertStringNotContainsString('members-start.jpg', $body);
+    }
+
+    /**
+     * The configured start page of the image sitemap is listed only when an anonymous
+     * visitor may see it: the content element on it is public, the page is not. The
+     * public pages below it are still listed.
+     */
+    #[Test]
+    public function theImageSitemapLeavesOutAStartPageRestrictedToAUserGroup(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Database/RestrictedStartPage.csv');
+        $this->setSitemapConstant('rootPage', '5');
+
+        $response = $this->executeFrontendSubRequest(
+            new InternalRequest($this->resolveImagesSitemapUrl()),
+        );
+
+        self::assertSame(200, $response->getStatusCode());
+
+        $body = (string) $response->getBody();
+
+        self::assertStringContainsString('public-below.jpg', $body);
+        self::assertStringNotContainsString('members-start.jpg', $body);
+    }
+
+    /**
+     * An empty table list is a configuration error, not an empty sitemap.
+     */
+    #[Test]
+    public function theImageSitemapReportsAnEmptyTableListAsMissingConfiguration(): void
+    {
+        $this->setSitemapConstant('tables', '');
+
+        $this->expectException(MissingConfigurationException::class);
+        $this->expectExceptionCode(1_652_249_698);
+
+        $this->executeFrontendSubRequest(
+            new InternalRequest($this->resolveImagesSitemapUrl()),
+        );
+    }
+
+    /**
      * @return list<string>
      */
     private function textContentsOf(DOMXPath $xpath, string $expression): array
@@ -182,6 +244,21 @@ final class ImagesXmlSitemapTest extends FunctionalTestCase
         );
 
         return html_entity_decode($matches['url'], ENT_QUOTES | ENT_XML1);
+    }
+
+    /**
+     * Overrides one constant of the image sitemap through a TypoScript record on the
+     * root page, which TYPO3 adds after the site set.
+     */
+    private function setSitemapConstant(string $name, string $value): void
+    {
+        $this->getConnectionPool()->getConnectionForTable('sys_template')->insert('sys_template', [
+            'pid'       => 1,
+            'title'     => 'Image sitemap test constants',
+            'root'      => 0,
+            'clear'     => 0,
+            'constants' => 'plugin.tx_nrimagesitemap.settings.xmlImagesSitemap.' . $name . ' = ' . $value,
+        ]);
     }
 
     private function writeSiteConfigurationWithImageSitemapSet(): void

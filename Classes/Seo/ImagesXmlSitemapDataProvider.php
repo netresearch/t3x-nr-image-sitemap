@@ -103,6 +103,13 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
 
         $treeListArray = $this->pageRepository->getPageIdsRecursive([$rootPageId], 99);
 
+        // getPageIdsRecursive() checks the access of the pages below the start page but
+        // always returns the start page itself. Its images are listed only when the
+        // current frontend user may see it (hidden, start/end time, fe_group).
+        if ($this->pageRepository->getPage($rootPageId) === []) {
+            $treeListArray = array_values(array_diff($treeListArray, [$rootPageId]));
+        }
+
         $images = $this->imageFileReferenceRepository->findAllImages(
             [
                 // The case value, not the enum instance: it is bound as an integer array

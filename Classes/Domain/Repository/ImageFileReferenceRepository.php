@@ -22,6 +22,7 @@ use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryHelper;
+use TYPO3\CMS\Core\Database\Query\Restriction\FrontendRestrictionContainer;
 use TYPO3\CMS\Core\Resource\FileType;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
@@ -138,6 +139,12 @@ final class ImageFileReferenceRepository extends Repository
                 $queryBuilder->expr()->eq('f.uid', $queryBuilder->quoteIdentifier('r.uid_local')),
             )
             ->leftJoin(
+                'f',
+                'sys_file_storage',
+                's',
+                $queryBuilder->expr()->eq('s.uid', $queryBuilder->quoteIdentifier('f.storage')),
+            )
+            ->leftJoin(
                 'r',
                 'pages',
                 'p',
@@ -157,6 +164,11 @@ final class ImageFileReferenceRepository extends Repository
             )
             ->andWhere(
                 $queryBuilder->expr()->eq('f.missing', 0),
+            )
+            // Files of a non-public storage are delivered through a signed download
+            // link that works for anyone holding it; such links are not published.
+            ->andWhere(
+                $queryBuilder->expr()->eq('s.is_public', 1),
             )
             ->andWhere(
                 $queryBuilder->expr()->in(
@@ -211,7 +223,9 @@ final class ImageFileReferenceRepository extends Repository
     }
 
     /**
-     * Returns the UID of the record the foreign table related to or FALSE otherwise.
+     * Whether the record the file reference belongs to is visible in the frontend
+     * context of the current request: not deleted, not hidden, within its start and
+     * end time, and accessible to the current frontend user groups (fe_group).
      *
      * @throws Exception
      */
@@ -226,6 +240,7 @@ final class ImageFileReferenceRepository extends Repository
         }
 
         $queryBuilder = $connection->createQueryBuilder();
+        $queryBuilder->setRestrictions(new FrontendRestrictionContainer($this->context));
 
         return (bool) $queryBuilder
             ->select('uid')
