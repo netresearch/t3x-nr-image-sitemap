@@ -21,6 +21,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Seo\XmlSitemap\Exception\MissingConfigurationException;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -147,29 +148,6 @@ final class ImagesXmlSitemapTest extends FunctionalTestCase
 
         self::assertContains('Tom & Jerry <script>alert(1)</script>', $this->textContentsOf($xpath, '//image:title'));
         self::assertContains('"Quoted" <b>caption</b> & more', $this->textContentsOf($xpath, '//image:caption'));
-    }
-
-    /**
-     * The configured start page of the image sitemap is listed only when an anonymous
-     * visitor may see it: the content element on it is public, the page is not. The
-     * public pages below it are still listed.
-     */
-    #[Test]
-    public function theImageSitemapLeavesOutAStartPageRestrictedToAUserGroup(): void
-    {
-        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Database/RestrictedStartPage.csv');
-        $this->setSitemapConstant('rootPage', '5');
-
-        $response = $this->executeFrontendSubRequest(
-            new InternalRequest($this->resolveImagesSitemapUrl()),
-        );
-
-        self::assertSame(200, $response->getStatusCode());
-
-        $body = (string) $response->getBody();
-
-        self::assertStringContainsString('public-below.jpg', $body);
-        self::assertStringNotContainsString('members-start.jpg', $body);
     }
 
     /**

@@ -80,7 +80,7 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
      */
     public function generateItems(): void
     {
-        $tables = GeneralUtility::trimExplode(',', (string) ($this->config['tables'] ?? ''));
+        $tables = GeneralUtility::trimExplode(',', (string) ($this->config['tables'] ?? ''), true);
 
         if ($tables === []) {
             throw new MissingConfigurationException(
@@ -144,6 +144,8 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
 
             // Create hash to merge all images belonging to same site
             $hashedUri = md5($frontendUri);
+
+            $image->setSiteUrl($siteUrl);
 
             $items[$hashedUri]['uri']      = $frontendUri;
             $items[$hashedUri]['baseUrl']  = $siteUrl;

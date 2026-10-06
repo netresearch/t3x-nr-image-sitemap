@@ -32,6 +32,12 @@ final class ImageFileReference extends FileReference
 
     protected string $tablenames = '';
 
+    /**
+     * Absolute URL of the frontend site root; not persisted, set by the sitemap
+     * data provider from the current request.
+     */
+    protected string $siteUrl = '';
+
     public function getTitle(): string
     {
         if ($this->title !== '' && $this->title !== '0') {
@@ -65,9 +71,10 @@ final class ImageFileReference extends FileReference
      * Prefixing the site URL is deliberately not done here: it used to be read from
      * GeneralUtility::getIndpEnv('TYPO3_SITE_URL'), which is deprecated since TYPO3 v14.3
      * in favour of NormalizedParams taken from the PSR-7 request, and a domain model has
-     * no access to that request. The composition now happens in
-     * {@see \Netresearch\NrImageSitemap\Seo\ImagesXmlSitemapDataProvider}, which passes
-     * the site URL to the template as `item.baseUrl`.
+     * no access to that request. The data provider
+     * {@see \Netresearch\NrImageSitemap\Seo\ImagesXmlSitemapDataProvider} sets the site URL
+     * of the request through {@see self::setSiteUrl()}, and the template renders
+     * {@see self::getLocation()}.
      */
     public function getPublicUrl(): string
     {
@@ -77,5 +84,27 @@ final class ImageFileReference extends FileReference
     public function getTablenames(): string
     {
         return $this->tablenames;
+    }
+
+    public function setSiteUrl(string $siteUrl): void
+    {
+        $this->siteUrl = $siteUrl;
+    }
+
+    /**
+     * Returns the absolute URL of the referenced file for the sitemap.
+     *
+     * A storage whose public URL is already absolute (a CDN or another host) is used
+     * as is; a site-relative URL is prefixed with the site URL.
+     */
+    public function getLocation(): string
+    {
+        $publicUrl = (string) $this->getOriginalResource()->getPublicUrl();
+
+        if ($publicUrl === '' || preg_match('#^([a-z][a-z0-9+.-]*:)?//#i', $publicUrl) === 1) {
+            return $publicUrl;
+        }
+
+        return rtrim($this->siteUrl, '/') . '/' . ltrim($publicUrl, '/');
     }
 }
