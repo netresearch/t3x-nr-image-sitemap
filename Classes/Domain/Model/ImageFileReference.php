@@ -79,7 +79,7 @@ final class ImageFileReference extends FileReference
      * in favour of NormalizedParams taken from the PSR-7 request, and a domain model has
      * no access to that request. The data provider
      * {@see \Netresearch\NrImageSitemap\Seo\ImagesXmlSitemapDataProvider} sets the site URL
-     * of the request through {@see self::setSiteUrl()}, and the template renders
+     * of the request through {@see self::setBaseUrls()}, and the template renders
      * {@see self::getLocation()}.
      */
     public function getPublicUrl(): string

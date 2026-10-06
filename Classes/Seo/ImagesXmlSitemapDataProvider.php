@@ -112,8 +112,7 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
             ? (int) $rootPageConfig
             : $this->request->getAttribute('site')->getRootPageId();
 
-        $treeListArray = $this->filterByStartPageAccess(
-            $rootPageId,
+        $treeListArray = $this->filterByRootLineAccess(
             $this->pageRepository->getPageIdsRecursive([$rootPageId], 99),
         );
 
@@ -165,53 +164,54 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
     }
 
     /**
-     * Applies the access rules of the start page to the page list.
+     * Keeps the pages a frontend request of the current user would be served.
      *
-     * getPageIdsRecursive() checks the pages below the start page, but neither the start
-     * page itself nor the pages above it. The start page is kept only when the current
-     * frontend user may see it (hidden, start/end time, fe_group); when it or a page above
-     * it denies access and passes that on to its subpages (extendToSubpages), no page of
-     * the tree is listed. The same holds for a backend user section in the root line
-     * when the request has no backend login, as TYPO3 does when it serves a page.
+     * getPageIdsRecursive() checks the pages below the start page from the top down, but
+     * neither the start page itself nor the pages above it, and it descends into the
+     * target of a mount point without checking the target's own root line. Each page is
+     * therefore checked against its own root line, as TYPO3 does before it serves a page:
+     * the page itself must be visible to the user (hidden, start/end time, fe_group), no
+     * page above it may deny access and pass that on to its subpages (extendToSubpages),
+     * and without a backend login no page in the root line may be a backend user section.
      *
      * @param array<int, int> $pageIds
      *
      * @return array<int, int>
      */
-    private function filterByStartPageAccess(int $rootPageId, array $pageIds): array
+    private function filterByRootLineAccess(array $pageIds): array
     {
-        try {
-            $rootLine = GeneralUtility::makeInstance(RootlineUtility::class, $rootPageId)->get();
-        } catch (PageNotFoundException|RootLineException) {
-            return [];
-        }
-
         $context         = GeneralUtility::makeInstance(Context::class);
         $voter           = GeneralUtility::makeInstance(RecordAccessVoter::class);
         $backendLoggedIn = (bool) $context->getPropertyFromAspect('backend.user', 'isLoggedIn', false);
 
+        return array_values(array_filter(
+            $pageIds,
+            fn (int $pageId): bool => $this->isServedToCurrentUser($pageId, $voter, $context, $backendLoggedIn),
+        ));
+    }
+
+    private function isServedToCurrentUser(int $pageId, RecordAccessVoter $voter, Context $context, bool $backendLoggedIn): bool
+    {
+        try {
+            $rootLine = GeneralUtility::makeInstance(RootlineUtility::class, $pageId)->get();
+        } catch (PageNotFoundException|RootLineException) {
+            return false;
+        }
+
         foreach ($rootLine as $page) {
             if (!$backendLoggedIn && (int) ($page['doktype'] ?? 0) === self::DOKTYPE_BACKEND_USER_SECTION) {
-                return [];
+                return false;
             }
 
-            if ((int) ($page['uid'] ?? 0) !== $rootPageId) {
-                if (!$voter->accessGrantedForPageInRootLine($page, $context)) {
-                    return [];
-                }
+            $granted = (int) ($page['uid'] ?? 0) === $pageId
+                ? $voter->accessGranted('pages', $page, $context)
+                : $voter->accessGrantedForPageInRootLine($page, $context);
 
-                continue;
-            }
-
-            if (!$voter->accessGranted('pages', $page, $context)) {
-                if ((bool) ($page['extendToSubpages'] ?? false)) {
-                    return [];
-                }
-
-                $pageIds = array_values(array_diff($pageIds, [$rootPageId]));
+            if (!$granted) {
+                return false;
             }
         }
 
-        return $pageIds;
+        return true;
     }
 }

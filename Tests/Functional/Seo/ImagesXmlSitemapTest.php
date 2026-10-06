@@ -212,6 +212,28 @@ final class ImagesXmlSitemapTest extends FunctionalTestCase
     }
 
     /**
+     * A mount point makes TYPO3 list the pages of the mounted subtree; a page whose own
+     * root line runs through a backend user section stays out all the same.
+     */
+    #[Test]
+    public function theImageSitemapLeavesOutPagesReachedThroughAMountPointThatTheVisitorMayNotSee(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Database/BackendUserSection.csv');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Database/MountPoint.csv');
+
+        $response = $this->executeFrontendSubRequest(
+            new InternalRequest($this->resolveImagesSitemapUrl()),
+        );
+
+        self::assertSame(200, $response->getStatusCode());
+
+        $body = (string) $response->getBody();
+
+        self::assertStringContainsString('image-one.jpg', $body);
+        self::assertStringNotContainsString('be-section-image.jpg', $body);
+    }
+
+    /**
      * An empty table list is a configuration error, not an empty sitemap.
      */
     #[Test]
