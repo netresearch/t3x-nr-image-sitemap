@@ -28,7 +28,7 @@ Checks that run on every pull request in this repository:
 - `.github/workflows/ci.yml`: PHP lint, code style (php-cs-fixer), PHPStan, Rector, and the unit and functional tests, for PHP 8.2 to 8.5 and TYPO3 13.4 and 14.3; the `ci / All CI checks` job summarises them for the branch rules.
 - `.github/workflows/harness-verify.yml`: `Build/Scripts/verify-harness.sh` checks that `AGENTS.md` and `docs/` match the repository.
 - `.github/workflows/check-template-drift.yml`: the workflow files managed by the organisation template have not drifted from it.
-- `.github/workflows/labeler.yml` labels the pull request by the paths it changes, `.github/workflows/community.yml` greets the author of a first pull request and `.github/workflows/auto-merge-deps.yml` approves dependency update pull requests from Renovate or Dependabot and enables auto-merge for them (not for major Dependabot updates); these three run on `pull_request_target` and check nothing.
+- `.github/workflows/labeler.yml` labels the pull request by the paths it changes, `.github/workflows/community.yml` greets the author of a first pull request and `.github/workflows/auto-merge-deps.yml` approves dependency update pull requests from Renovate or Dependabot and enables auto-merge for them, unless the pull request carries the `deps-major` or `deps-no-automerge` label; these three run on `pull_request_target` and check nothing.
 
 No exception is recorded: `composer.json` has no `config.audit.ignore` entry.
 
