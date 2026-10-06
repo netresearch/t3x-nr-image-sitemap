@@ -2,8 +2,10 @@
 <!-- SPDX-FileCopyrightText: Netresearch DTT GmbH -->
 # 14.0.2
 
-Security and correctness fixes for the image sitemap. Users of all earlier
-versions should update.
+Security and correctness fixes for the image sitemap, for TYPO3 13.4 and 14.3.
+The fixes are not backported: earlier versions, including the TYPO3 11 and 12
+lines, keep the previous behaviour (`SECURITY.md` supports the latest release
+only).
 
 ## Security
 
@@ -28,6 +30,12 @@ versions should update.
   for it instead of producing an empty sitemap.
 
 ## Other changes
+
+- Release archives built with `git archive` (GitHub archives and the Composer
+  dist) no longer contain development files such as `Build/`, `Tests/` and
+  `.github/` (`.gitattributes`).
+- The `@license` docblocks in `Classes/` name `AGPL-3.0-or-later`, as
+  `composer.json` does.
 
 CI and documentation were synchronised with the organisation templates, and
 `CONTRIBUTING.md`, `docs/SECURITY-ASSURANCE.md` and `docs/ARCHITECTURE.md`
