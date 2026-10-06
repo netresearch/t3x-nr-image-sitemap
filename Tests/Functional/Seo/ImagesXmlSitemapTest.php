@@ -174,6 +174,26 @@ final class ImagesXmlSitemapTest extends FunctionalTestCase
     }
 
     /**
+     * A start page that restricts its whole subtree (extendToSubpages) hides the pages
+     * below it as well, although they carry no restriction of their own.
+     */
+    #[Test]
+    public function theImageSitemapLeavesOutTheSubtreeOfAStartPageThatRestrictsIt(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Database/RestrictedStartPageTree.csv');
+        $this->setSitemapConstant('rootPage', '7');
+
+        // With no visible page left, the image sitemap has no entries, and cms-seo leaves
+        // it out of the sitemap index.
+        $index = (string) $this->executeFrontendSubRequest(
+            new InternalRequest('https://localhost/?type=1642072014'),
+        )->getBody();
+
+        self::assertStringContainsString('<sitemapindex', $index);
+        self::assertDoesNotMatchRegularExpression('#sitemap(%5D|\])?=images#', $index);
+    }
+
+    /**
      * An empty table list is a configuration error, not an empty sitemap.
      */
     #[Test]

@@ -17,10 +17,15 @@ namespace Netresearch\NrImageSitemap\Seo;
 use Doctrine\DBAL\Driver\Exception;
 use Netresearch\NrImageSitemap\Domain\Repository\ImageFileReferenceRepository;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Domain\Access\RecordAccessVoter;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Exception\Page\PageNotFoundException;
+use TYPO3\CMS\Core\Exception\Page\RootLineException;
 use TYPO3\CMS\Core\Resource\FileType;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Extbase\Persistence\Exception\InvalidQueryException;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Typolink\LinkFactory;
@@ -101,14 +106,10 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
             ? (int) $rootPageConfig
             : $this->request->getAttribute('site')->getRootPageId();
 
-        $treeListArray = $this->pageRepository->getPageIdsRecursive([$rootPageId], 99);
-
-        // getPageIdsRecursive() checks the access of the pages below the start page but
-        // always returns the start page itself. Its images are listed only when the
-        // current frontend user may see it (hidden, start/end time, fe_group).
-        if ($this->pageRepository->getPage($rootPageId) === []) {
-            $treeListArray = array_values(array_diff($treeListArray, [$rootPageId]));
-        }
+        $treeListArray = $this->filterByStartPageAccess(
+            $rootPageId,
+            $this->pageRepository->getPageIdsRecursive([$rootPageId], 99),
+        );
 
         $images = $this->imageFileReferenceRepository->findAllImages(
             [
@@ -130,7 +131,9 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
         // of a file reference into an absolute one. This is the documented replacement for
         // GeneralUtility::getIndpEnv('TYPO3_SITE_URL'), which the domain model used before
         // and which is deprecated since TYPO3 v14.3.
-        $siteUrl = $this->request->getAttribute('normalizedParams')?->getSiteUrl() ?? '';
+        $normalizedParams = $this->request->getAttribute('normalizedParams');
+        $siteUrl          = $normalizedParams?->getSiteUrl() ?? '';
+        $requestHost      = $normalizedParams?->getRequestHost() ?? '';
 
         $items = [];
 
@@ -145,7 +148,7 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
             // Create hash to merge all images belonging to same site
             $hashedUri = md5($frontendUri);
 
-            $image->setSiteUrl($siteUrl);
+            $image->setBaseUrls($siteUrl, $requestHost);
 
             $items[$hashedUri]['uri']      = $frontendUri;
             $items[$hashedUri]['baseUrl']  = $siteUrl;
@@ -153,5 +156,50 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
         }
 
         $this->items = $items;
+    }
+
+    /**
+     * Applies the access rules of the start page to the page list.
+     *
+     * getPageIdsRecursive() checks the pages below the start page, but neither the start
+     * page itself nor the pages above it. The start page is kept only when the current
+     * frontend user may see it (hidden, start/end time, fe_group); when it or a page above
+     * it denies access and passes that on to its subpages (extendToSubpages), no page of
+     * the tree is listed.
+     *
+     * @param array<int, int> $pageIds
+     *
+     * @return array<int, int>
+     */
+    private function filterByStartPageAccess(int $rootPageId, array $pageIds): array
+    {
+        try {
+            $rootLine = GeneralUtility::makeInstance(RootlineUtility::class, $rootPageId)->get();
+        } catch (PageNotFoundException|RootLineException) {
+            return [];
+        }
+
+        $context = GeneralUtility::makeInstance(Context::class);
+        $voter   = GeneralUtility::makeInstance(RecordAccessVoter::class);
+
+        foreach ($rootLine as $page) {
+            if ((int) ($page['uid'] ?? 0) !== $rootPageId) {
+                if (!$voter->accessGrantedForPageInRootLine($page, $context)) {
+                    return [];
+                }
+
+                continue;
+            }
+
+            if (!$voter->accessGranted('pages', $page, $context)) {
+                if ((bool) ($page['extendToSubpages'] ?? false)) {
+                    return [];
+                }
+
+                $pageIds = array_values(array_diff($pageIds, [$rootPageId]));
+            }
+        }
+
+        return $pageIds;
     }
 }

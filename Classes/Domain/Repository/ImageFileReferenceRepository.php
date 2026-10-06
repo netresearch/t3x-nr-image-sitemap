@@ -114,7 +114,13 @@ final class ImageFileReferenceRepository extends Repository
                 ->execute(),
         );
 
-        return $images;
+        // A file of a storage that TYPO3 does not serve publicly (is_public = 0, or a
+        // local storage outside the public directory) gets a signed download link as
+        // its public URL, which works for anyone holding it; such links are not published.
+        return array_values(array_filter(
+            $images,
+            static fn (ImageFileReference $image): bool => $image->getOriginalResource()->getStorage()->isPublic(),
+        ));
     }
 
     /**
@@ -139,12 +145,6 @@ final class ImageFileReferenceRepository extends Repository
                 $queryBuilder->expr()->eq('f.uid', $queryBuilder->quoteIdentifier('r.uid_local')),
             )
             ->leftJoin(
-                'f',
-                'sys_file_storage',
-                's',
-                $queryBuilder->expr()->eq('s.uid', $queryBuilder->quoteIdentifier('f.storage')),
-            )
-            ->leftJoin(
                 'r',
                 'pages',
                 'p',
@@ -164,11 +164,6 @@ final class ImageFileReferenceRepository extends Repository
             )
             ->andWhere(
                 $queryBuilder->expr()->eq('f.missing', 0),
-            )
-            // Files of a non-public storage are delivered through a signed download
-            // link that works for anyone holding it; such links are not published.
-            ->andWhere(
-                $queryBuilder->expr()->eq('s.is_public', 1),
             )
             ->andWhere(
                 $queryBuilder->expr()->in(

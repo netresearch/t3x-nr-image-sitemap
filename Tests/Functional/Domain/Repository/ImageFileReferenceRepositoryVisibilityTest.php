@@ -20,11 +20,12 @@ use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\UserAspect;
 use TYPO3\CMS\Core\Resource\FileType;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
  * Pins which file references the repository hands to the sitemap: only live, visible
- * references on visible pages, to files of a public storage, attached to records that
+ * references on visible pages, to files TYPO3 serves publicly, attached to records that
  * are neither hidden nor deleted and that the current frontend user groups may see.
  *
  * docs/SECURITY-ASSURANCE.md cites this test for those claims.
@@ -39,6 +40,17 @@ final class ImageFileReferenceRepositoryVisibilityTest extends FunctionalTestCas
         'netresearch/nr-image-sitemap',
     ];
 
+    /**
+     * Allows storage 3 of the fixture, a local storage outside the public directory.
+     *
+     * @var array<string, mixed>
+     */
+    protected array $configurationToUseInTestInstance = [
+        'BE' => [
+            'lockRootPath' => ['/tmp/nr-image-sitemap-outside/'],
+        ],
+    ];
+
     private ImageFileReferenceRepository $subject;
 
     protected function setUp(): void
@@ -46,6 +58,10 @@ final class ImageFileReferenceRepositoryVisibilityTest extends FunctionalTestCas
         parent::setUp();
 
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Database/Visibility.csv');
+
+        // Storage 3 of the fixture is a local storage outside the public directory; it
+        // must exist, or TYPO3 treats the storage as offline instead.
+        GeneralUtility::mkdir_deep('/tmp/nr-image-sitemap-outside/');
 
         $this->subject = $this->get(ImageFileReferenceRepository::class);
     }
@@ -61,7 +77,7 @@ final class ImageFileReferenceRepositoryVisibilityTest extends FunctionalTestCas
         $this->get(Context::class)->setAspect('frontend.user', new UserAspect(null, [0, -1]));
 
         self::assertSame(
-            [1, 8, 13],
+            [1, 8, 13, 16],
             $this->findAllImageUids(),
             'Only the live reference on the visible page and the ones from content elements an anonymous visitor may see may be returned.',
         );
@@ -76,7 +92,7 @@ final class ImageFileReferenceRepositoryVisibilityTest extends FunctionalTestCas
     {
         $this->get(Context::class)->setAspect('frontend.user', new UserAspect(null, [0, -2, 1]));
 
-        self::assertSame([1, 8, 12], $this->findAllImageUids());
+        self::assertSame([1, 8, 12, 16], $this->findAllImageUids());
     }
 
     /**

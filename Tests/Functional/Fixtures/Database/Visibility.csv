@@ -16,10 +16,13 @@
 ,"uid","pid","name","driver","is_default","is_public","is_writable","is_browsable","is_online","configuration"
 ,1,0,"fileadmin","Local",1,1,1,1,1,"<T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""basePath""><value index=""vDEF"">fileadmin/</value></field><field index=""pathType""><value index=""vDEF"">relative</value></field></language></sheet></data></T3FlexForms>"
 ,2,0,"members","Local",0,0,1,1,1,"<T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""basePath""><value index=""vDEF"">members/</value></field><field index=""pathType""><value index=""vDEF"">relative</value></field></language></sheet></data></T3FlexForms>"
+,3,0,"outside the public directory","Local",0,1,1,1,1,"<T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""basePath""><value index=""vDEF"">/tmp/nr-image-sitemap-outside/</value></field><field index=""pathType""><value index=""vDEF"">absolute</value></field></language></sheet></data></T3FlexForms>"
 "sys_file"
 ,"uid","pid","storage","type","missing","identifier","extension","mime_type","name","size"
 ,1,0,1,2,0,"/user_upload/image-one.jpg","jpg","image/jpeg","image-one.jpg",1024
 ,2,0,2,2,0,"/members/image-two.jpg","jpg","image/jpeg","image-two.jpg",2048
+,3,0,3,2,0,"/image-three.jpg","jpg","image/jpeg","image-three.jpg",2048
+,4,0,0,2,0,"/fileadmin/legacy/image-four.jpg","jpg","image/jpeg","image-four.jpg",2048
 "sys_file_reference"
 ,"uid","pid","uid_local","uid_foreign","tablenames","fieldname","sys_language_uid","t3ver_wsid","deleted","hidden","title","description"
 ,1,1,1,1,"pages","media",0,0,0,0,"Live reference on a visible page",""
@@ -36,3 +39,5 @@
 ,12,1,1,5,"tt_content","image",0,0,0,0,"Reference from a content element for members of group 1",""
 ,13,1,1,6,"tt_content","image",0,0,0,0,"Reference from a content element hidden at login",""
 ,14,1,2,1,"pages","media",0,0,0,0,"Reference to a file in a non-public storage",""
+,15,1,3,1,"pages","media",0,0,0,0,"Reference to a file in a storage outside the public directory",""
+,16,1,4,1,"pages","media",0,0,0,0,"Reference to a file in the fallback storage",""
