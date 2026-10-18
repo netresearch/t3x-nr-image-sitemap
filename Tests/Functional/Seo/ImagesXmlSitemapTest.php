@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Netresearch\NrImageSitemap\Tests\Functional\Seo;
 
 use DOMDocument;
+use DOMNode;
 use DOMNodeList;
 use DOMXPath;
 use PHPUnit\Framework\Attributes\Test;
@@ -259,6 +260,7 @@ final class ImagesXmlSitemapTest extends FunctionalTestCase
 
         $contents = [];
         foreach ($nodes as $node) {
+            self::assertInstanceOf(DOMNode::class, $node);
             $contents[] = $node->textContent;
         }
 

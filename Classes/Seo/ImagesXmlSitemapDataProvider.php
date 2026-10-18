@@ -213,9 +213,9 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
      * page above it may deny access and pass that on to its subpages (extendToSubpages),
      * and without a backend login no page in the root line may be a backend user section.
      *
-     * @param array<int, int> $pageIds
+     * @param array<int> $pageIds
      *
-     * @return array<int, int>
+     * @return list<int>
      */
     private function filterByRootLineAccess(array $pageIds): array
     {
@@ -243,11 +243,14 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
                 return false;
             }
 
-            if (!$backendLoggedIn && (int) ($page['doktype'] ?? 0) === self::DOKTYPE_BACKEND_USER_SECTION) {
+            $doktype = $page['doktype'] ?? 0;
+
+            if (!$backendLoggedIn && is_numeric($doktype) && (int) $doktype === self::DOKTYPE_BACKEND_USER_SECTION) {
                 return false;
             }
 
-            $granted = (int) ($page['uid'] ?? 0) === $pageId
+            $uid     = $page['uid'] ?? 0;
+            $granted = is_numeric($uid) && (int) $uid === $pageId
                 ? $voter->accessGranted('pages', $page, $context)
                 : $voter->accessGrantedForPageInRootLine($page, $context);
 

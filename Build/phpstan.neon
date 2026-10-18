@@ -1,30 +1,32 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # SPDX-FileCopyrightText: Netresearch DTT GmbH
 
-parameters:
-    # You can currently choose from 10 levels (0 is the loosest and 9 is the strictest).
-    level: 5
+# The shared config sets level 10, treatPhpDocTypesAsCertain, the
+# strictness flags and excludePaths (.Build, ext_emconf.php);
+# phpstan/extension-installer registers phpstan-typo3, phpat and the other
+# PHPStan extensions.
+includes:
+    - %currentWorkingDirectory%/.Build/vendor/netresearch/typo3-ci-workflows/config/phpstan/phpstan.neon
 
+parameters:
     paths:
         - %currentWorkingDirectory%/Classes/
         - %currentWorkingDirectory%/Configuration/
         - %currentWorkingDirectory%/Resources/
         - %currentWorkingDirectory%/Tests/
 
-    excludePaths:
-        - %currentWorkingDirectory%/.Build/*
-        - %currentWorkingDirectory%/ext_emconf.php
-
-
-    treatPhpDocTypesAsCertain: false
-
-    # Allow extending TYPO3 framework base classes that are mandatory integration points:
-    # - FileReference: required to register a custom Extbase file reference domain model
-    # - Repository: required Extbase persistence base class
-    # - AbstractXmlSitemapDataProvider: required base class for typo3/cms-seo data providers
-    # - FunctionalTestCase: required base class for typo3/testing-framework functional tests
-    #   (PHPUnit\Framework\TestCase is already part of the rule's own default allow list)
     ergebnis:
+        # The shared config switches allRules off and opts in to six rules.
+        # This repository ran every ergebnis rule before (the package
+        # default), which is stricter, so it keeps them all.
+        allRules: true
+
+        # Allow extending TYPO3 framework base classes that are mandatory integration points:
+        # - FileReference: required to register a custom Extbase file reference domain model
+        # - Repository: required Extbase persistence base class
+        # - AbstractXmlSitemapDataProvider: required base class for typo3/cms-seo data providers
+        # - FunctionalTestCase: required base class for typo3/testing-framework functional tests
+        #   (PHPUnit\Framework\TestCase is already part of the rule's own default allow list)
         noExtends:
             classesAllowedToBeExtended:
                 - TYPO3\CMS\Extbase\Domain\Model\FileReference
@@ -49,4 +51,3 @@ parameters:
         -
             identifier: ergebnis.noParameterWithNullDefaultValue
             path: ../Classes/Seo/ImagesXmlSitemapDataProvider.php
-
