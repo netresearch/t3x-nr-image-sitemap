@@ -23,6 +23,7 @@ use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Exception\Page\PageNotFoundException;
 use TYPO3\CMS\Core\Exception\Page\RootLineException;
 use TYPO3\CMS\Core\Resource\FileType;
+use TYPO3\CMS\Core\Site\Entity\SiteInterface;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
@@ -31,6 +32,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Typolink\LinkFactory;
 use TYPO3\CMS\Seo\XmlSitemap\AbstractXmlSitemapDataProvider;
 use TYPO3\CMS\Seo\XmlSitemap\Exception\MissingConfigurationException;
+use UnexpectedValueException;
 
 /**
  * Generate sitemap for images.
@@ -88,10 +90,11 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
      * @throws InvalidQueryException
      * @throws MissingConfigurationException
      * @throws Exception
+     * @throws UnexpectedValueException
      */
     public function generateItems(): void
     {
-        $tables = GeneralUtility::trimExplode(',', (string) ($this->config['tables'] ?? ''), true);
+        $tables = GeneralUtility::trimExplode(',', $this->getConfigurationValue('tables'), true);
 
         if ($tables === []) {
             throw new MissingConfigurationException(
@@ -100,17 +103,17 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
             );
         }
 
-        $excludedDoktypesConfig = (string) ($this->config['excludedDoktypes'] ?? '');
+        $excludedDoktypesConfig = $this->getConfigurationValue('excludedDoktypes');
         $excludedDoktypes       = $excludedDoktypesConfig !== ''
             ? GeneralUtility::intExplode(',', $excludedDoktypesConfig)
             : [];
 
-        $additionalWhere = (string) ($this->config['additionalWhere'] ?? '');
+        $additionalWhere = $this->getConfigurationValue('additionalWhere');
 
-        $rootPageConfig = (string) ($this->config['rootPage'] ?? '');
+        $rootPageConfig = $this->getConfigurationValue('rootPage');
         $rootPageId     = $rootPageConfig !== ''
             ? (int) $rootPageConfig
-            : $this->request->getAttribute('site')->getRootPageId();
+            : $this->getRootPageIdOfSite();
 
         $treeListArray = $this->filterByRootLineAccess(
             $this->pageRepository->getPageIdsRecursive([$rootPageId], 99),
@@ -143,8 +146,15 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
         $items = [];
 
         foreach ($images as $image) {
-            $link    = $this->linkFactory->createUri((string) $image->getPid());
-            $site    = $this->siteFinder->getSiteByPageId($image->getPid());
+            $pageId = $image->getPid();
+
+            // A file reference that was never persisted has no page; it cannot be linked.
+            if ($pageId === null) {
+                continue;
+            }
+
+            $link    = $this->linkFactory->createUri((string) $pageId);
+            $site    = $this->siteFinder->getSiteByPageId($pageId);
             $baseUrl = $site->getBase()->__toString();
 
             // Construct full URL
@@ -164,6 +174,48 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
     }
 
     /**
+     * Returns a value of the sitemap configuration as a string. A missing value is
+     * the empty string. A value that is not a scalar, such as a TypoScript array, is
+     * a configuration error: treating it as absent would drop a restriction such as
+     * `excludedDoktypes` or `additionalWhere` and list images it was meant to hide.
+     *
+     * @throws UnexpectedValueException
+     */
+    private function getConfigurationValue(string $key): string
+    {
+        $value = $this->config[$key] ?? '';
+
+        if (!is_scalar($value)) {
+            throw new UnexpectedValueException(
+                'Sitemap ' . $this->getKey() . ': config.' . $key . ' must be a string, got ' . get_debug_type($value),
+                1_792_381_080,
+            );
+        }
+
+        return (string) $value;
+    }
+
+    /**
+     * Returns the root page of the site of the current request; without a `rootPage`
+     * setting, the sitemap lists the pages of that site.
+     *
+     * @throws MissingConfigurationException
+     */
+    private function getRootPageIdOfSite(): int
+    {
+        $site = $this->request->getAttribute('site');
+
+        if (!$site instanceof SiteInterface) {
+            throw new MissingConfigurationException(
+                'No rootPage configured for sitemap ' . $this->getKey() . ' and the request has no site',
+                1_792_353_600,
+            );
+        }
+
+        return $site->getRootPageId();
+    }
+
+    /**
      * Keeps the pages a frontend request of the current user would be served.
      *
      * getPageIdsRecursive() checks the pages below the start page from the top down, but
@@ -174,9 +226,9 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
      * page above it may deny access and pass that on to its subpages (extendToSubpages),
      * and without a backend login no page in the root line may be a backend user section.
      *
-     * @param array<int, int> $pageIds
+     * @param array<int> $pageIds
      *
-     * @return array<int, int>
+     * @return list<int>
      */
     private function filterByRootLineAccess(array $pageIds): array
     {
@@ -199,11 +251,19 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
         }
 
         foreach ($rootLine as $page) {
-            if (!$backendLoggedIn && (int) ($page['doktype'] ?? 0) === self::DOKTYPE_BACKEND_USER_SECTION) {
+            // A root line entry that is not a page record cannot be checked: deny.
+            if (!is_array($page)) {
                 return false;
             }
 
-            $granted = (int) ($page['uid'] ?? 0) === $pageId
+            $doktype = $page['doktype'] ?? 0;
+
+            if (!$backendLoggedIn && is_numeric($doktype) && (int) $doktype === self::DOKTYPE_BACKEND_USER_SECTION) {
+                return false;
+            }
+
+            $uid     = $page['uid'] ?? 0;
+            $granted = is_numeric($uid) && (int) $uid === $pageId
                 ? $voter->accessGranted('pages', $page, $context)
                 : $voter->accessGrantedForPageInRootLine($page, $context);
 

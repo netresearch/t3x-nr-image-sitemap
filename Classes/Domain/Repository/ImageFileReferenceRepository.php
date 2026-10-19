@@ -35,6 +35,8 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  * @license AGPL-3.0-or-later https://www.gnu.org/licenses/agpl-3.0.html
  *
  * @see    https://www.netresearch.de
+ *
+ * @extends Repository<ImageFileReference>
  */
 final class ImageFileReferenceRepository extends Repository
 {
@@ -82,17 +84,17 @@ final class ImageFileReferenceRepository extends Repository
 
         // Walk result set row by row, to prevent too much memory usage
         while ($row = $statement->fetchAssociative()) {
-            if (!array_key_exists('tablenames', $row)) {
-                continue;
-            }
+            $tableName  = $row['tablenames'] ?? null;
+            $foreignUid = $row['uid_foreign'] ?? null;
+            $uid        = $row['uid'] ?? null;
 
-            if (!array_key_exists('uid_foreign', $row)) {
+            if (!is_string($tableName) || !is_numeric($foreignUid) || !is_numeric($uid)) {
                 continue;
             }
 
             // Check if the foreign table record exists
-            if ($this->findRecordByForeignUid((string) $row['tablenames'], (int) $row['uid_foreign'])) {
-                $existingRecords[] = (int) $row['uid'];
+            if ($this->findRecordByForeignUid($tableName, (int) $foreignUid)) {
+                $existingRecords[] = (int) $uid;
             }
         }
 
@@ -125,6 +127,11 @@ final class ImageFileReferenceRepository extends Repository
 
     /**
      * Returns all file reference records.
+     *
+     * @param array<int, int>    $fileTypes
+     * @param array<int, int>    $pageList
+     * @param array<int, string> $tables
+     * @param array<int, int>    $excludedDoktypes
      */
     private function getAllRecords(
         array $fileTypes,
@@ -259,9 +266,11 @@ final class ImageFileReferenceRepository extends Repository
     private function getLanguageUid(): int
     {
         try {
-            return $this->context->getPropertyFromAspect('language', 'id');
+            $languageUid = $this->context->getPropertyFromAspect('language', 'id');
         } catch (AspectNotFoundException) {
             return 0;
         }
+
+        return is_int($languageUid) ? $languageUid : 0;
     }
 }

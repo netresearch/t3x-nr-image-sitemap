@@ -51,7 +51,9 @@ final class ImageFileReference extends FileReference
         }
 
         if ($this->getOriginalResource()->hasProperty('title')) {
-            return (string) $this->getOriginalResource()->getProperty('title');
+            $title = $this->getOriginalResource()->getProperty('title');
+
+            return is_scalar($title) ? (string) $title : '';
         }
 
         return '';
@@ -64,7 +66,9 @@ final class ImageFileReference extends FileReference
         }
 
         if ($this->getOriginalResource()->hasProperty('description')) {
-            return (string) $this->getOriginalResource()->getProperty('description');
+            $description = $this->getOriginalResource()->getProperty('description');
+
+            return is_scalar($description) ? (string) $description : '';
         }
 
         return '';
