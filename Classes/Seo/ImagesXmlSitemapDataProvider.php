@@ -32,6 +32,7 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Typolink\LinkFactory;
 use TYPO3\CMS\Seo\XmlSitemap\AbstractXmlSitemapDataProvider;
 use TYPO3\CMS\Seo\XmlSitemap\Exception\MissingConfigurationException;
+use UnexpectedValueException;
 
 /**
  * Generate sitemap for images.
@@ -89,6 +90,7 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
      * @throws InvalidQueryException
      * @throws MissingConfigurationException
      * @throws Exception
+     * @throws UnexpectedValueException
      */
     public function generateItems(): void
     {
@@ -172,14 +174,25 @@ final class ImagesXmlSitemapDataProvider extends AbstractXmlSitemapDataProvider
     }
 
     /**
-     * Returns a value of the sitemap configuration as a string; a value that is not
-     * a scalar, such as a TypoScript array, counts as not configured.
+     * Returns a value of the sitemap configuration as a string. A missing value is
+     * the empty string. A value that is not a scalar, such as a TypoScript array, is
+     * a configuration error: treating it as absent would drop a restriction such as
+     * `excludedDoktypes` or `additionalWhere` and list images it was meant to hide.
+     *
+     * @throws UnexpectedValueException
      */
     private function getConfigurationValue(string $key): string
     {
         $value = $this->config[$key] ?? '';
 
-        return is_scalar($value) ? (string) $value : '';
+        if (!is_scalar($value)) {
+            throw new UnexpectedValueException(
+                'Sitemap ' . $this->getKey() . ': config.' . $key . ' must be a string, got ' . get_debug_type($value),
+                1_792_381_080,
+            );
+        }
+
+        return (string) $value;
     }
 
     /**

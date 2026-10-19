@@ -18,6 +18,7 @@ use DOMDocument;
 use DOMNode;
 use DOMNodeList;
 use DOMXPath;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Core\Environment;
@@ -25,6 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Seo\XmlSitemap\Exception\MissingConfigurationException;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
+use UnexpectedValueException;
 
 /**
  * Renders the image sitemap through a real frontend request.
@@ -244,6 +246,39 @@ final class ImagesXmlSitemapTest extends FunctionalTestCase
 
         $this->expectException(MissingConfigurationException::class);
         $this->expectExceptionCode(1_652_249_698);
+
+        $this->executeFrontendSubRequest(
+            new InternalRequest($this->resolveImagesSitemapUrl()),
+        );
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function restrictionKeys(): iterable
+    {
+        yield 'excludedDoktypes' => ['excludedDoktypes'];
+        yield 'additionalWhere' => ['additionalWhere'];
+    }
+
+    /**
+     * A restriction given as a TypoScript array is a configuration error. Treating
+     * it as not configured would drop the restriction and list the images it hides.
+     */
+    #[Test]
+    #[DataProvider('restrictionKeys')]
+    public function theImageSitemapRejectsARestrictionGivenAsAnArray(string $key): void
+    {
+        $this->getConnectionPool()->getConnectionForTable('sys_template')->insert('sys_template', [
+            'pid'    => 1,
+            'title'  => 'Image sitemap test setup',
+            'root'   => 0,
+            'clear'  => 0,
+            'config' => 'plugin.tx_seo.config.xmlImagesSitemap.sitemaps.images.config.' . $key . '.nested = 1',
+        ]);
+
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionCode(1_792_381_080);
 
         $this->executeFrontendSubRequest(
             new InternalRequest($this->resolveImagesSitemapUrl()),
