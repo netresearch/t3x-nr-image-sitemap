@@ -14,7 +14,7 @@
 $EM_CONF[$_EXTKEY] = [
     'title'       => 'Image Sitemap',
     'description' => 'Data provider for the typo3/cms-seo extension that creates an image sitemap.',
-    'version'     => '14.0.2',
+    'version'     => '14.0.3',
     'category'    => 'plugin',
     'constraints' => [
         'depends' => [
