@@ -1,5 +1,38 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 <!-- SPDX-FileCopyrightText: Netresearch DTT GmbH -->
+# 14.0.3
+
+Correctness fixes for the image sitemap configuration, for TYPO3 13.4 and 14.3.
+
+## Fixes
+
+- A sitemap setting given as a TypoScript array (for example
+  `config.additionalWhere.x = 1`) throws an `UnexpectedValueException`
+  (code 1792381080) that names the setting. TYPO3 hands the sitemap
+  configuration over as a plain array, and 14.0.2 cast such a value to the
+  string "Array", so a restriction such as `excludedDoktypes` no longer
+  restricted anything.
+- Without a `rootPage` setting and without a site for the request, the
+  provider throws a `MissingConfigurationException` (code 1792353600) that
+  names the sitemap key instead of failing with an `Error`. It never falls
+  back to page 0.
+- A file reference without a page id is skipped, and a root line entry that
+  is not an array marks the page as not served, instead of raising a
+  `TypeError`.
+- Metadata title and description, row values of the file reference query and
+  the root line `doktype` and `uid` are checked for their type before they are
+  cast.
+
+## Other changes
+
+- The `composer.json` description equals the `ext_emconf.php` title and
+  description joined by " - ", which clears the "Composer Manifest" warning in
+  the TYPO3 14.3 Reports module; the extension is called "Image Sitemap"
+  everywhere.
+- PHPStan runs at level 10 with the shared configuration of
+  `netresearch/typo3-ci-workflows`; Rector and PHP-CS-Fixer use its shared
+  options.
+
 # 14.0.2
 
 Security and correctness fixes for the image sitemap, for TYPO3 13.4 and 14.3.
