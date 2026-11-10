@@ -121,7 +121,7 @@ docs/            → agent-facing docs: ARCHITECTURE.md, exec-plans/
 
 ## Changelog
 
-- Changes are recorded in [`CHANGELOG.md`](CHANGELOG.md), newest first: `# X.Y.Z`, an optional one-line summary, then `## Security`, `## FEATURE`, `## Fixes`, `## TASK`, `## Other changes` as needed and `## Contributors`. There is no `Unreleased` section.
+- Changes are recorded in [`CHANGELOG.md`](CHANGELOG.md), newest first: `# X.Y.Z`, an optional one-line summary, then `## BREAKING`, `## Security`, `## FEATURE`, `## Fixes` (older sections: `## BUGFIX`), `## TASK`, `## Other changes` (older: `## MISC`) as needed and `## Contributors`. There is no `Unreleased` section.
 - The release PR `chore(release): X.Y.Z` writes the version's section; feature and fix PRs leave the file alone.
 
 ## Scoped AGENTS.md (MUST read when working in these directories)
