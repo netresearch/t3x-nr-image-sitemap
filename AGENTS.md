@@ -119,6 +119,11 @@ docs/            → agent-facing docs: ARCHITECTURE.md, exec-plans/
 - **Context**: Every PR must explain the trade-offs considered and link to the issue it addresses. Disclose AI assistance if the project requires it.
 - **Continuity**: Respond to review feedback. Drive-by PRs without follow-up will be closed.
 
+## Changelog
+
+- Changes are recorded in [`CHANGELOG.md`](CHANGELOG.md), newest first: `# X.Y.Z`, an optional one-line summary, then `## BREAKING`, `## Security`, `## FEATURE`, `## Fixes` (older sections: `## BUGFIX`), `## TASK`, `## Other changes` (older: `## MISC`) as needed and `## Contributors`. There is no `Unreleased` section.
+- The release PR `chore(release): X.Y.Z` writes the version's section; feature and fix PRs leave the file alone.
+
 ## Scoped AGENTS.md (MUST read when working in these directories)
 <!-- AGENTS-GENERATED:START scope-index -->
 - `./.github/workflows/AGENTS.md` — GitHub Actions workflows and CI/CD automation
