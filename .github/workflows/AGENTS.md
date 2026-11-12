@@ -41,7 +41,7 @@ Every workflow here is a thin caller of a central reusable in `netresearch/.gith
 
 <!-- AGENTS-GENERATED:START code-style -->
 ## Workflow conventions
-- **Thin callers**: no repo-local `run:` step logic except the gate in `checks.yml`; extend the central reusable instead of inlining steps
+- **Thin callers**: no repo-local `run:` step logic except the gate and the `supersede` job in `checks.yml` (`supersede` cancels the Checks runs of earlier head commits of a pull request and is intentionally not in `gate.needs`); extend the central reusable instead of inlining steps
 - **Explicit `permissions`**: top-level `permissions: {}` (or `contents: read`), each `uses:` job grants exactly the reusable's caller contract
 - **Pin direct action uses** to a full commit SHA with a version comment (see harden-runner in `checks.yml`)
 - **`pull_request_target` needs a zizmor ignore comment** (`# zizmor: ignore[dangerous-triggers]`) plus a prose justification why no PR head code runs
