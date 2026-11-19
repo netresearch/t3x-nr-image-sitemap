@@ -11,7 +11,7 @@ Requirements
 
 * TYPO3 13.4 LTS or 14.3 LTS
 * ``typo3/cms-seo`` in the matching version
-* PHP 8.2 - 8.5
+* PHP 8.2 - 8.6
 
 Installation
 ============

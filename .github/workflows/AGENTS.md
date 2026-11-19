@@ -13,7 +13,7 @@ Every workflow here is a thin caller of a central reusable in `netresearch/.gith
 ## Key Files
 | File | Purpose |
 |------|---------|
-| `ci.yml` | Test matrix (PHP 8.2-8.5 × TYPO3 ^13.4/^14.3, pins `typo3/cms-core` + `typo3/cms-seo` per leg) via `typo3-ci-workflows/ci.yml` — intentional-drift, customize here |
+| `ci.yml` | Test matrix (PHP 8.2-8.6 × TYPO3 ^13.4/^14.3, pins `typo3/cms-core` + `typo3/cms-seo` per leg) via `typo3-ci-workflows/ci.yml` — intentional-drift, customize here |
 | `checks.yml` | Security/quality jobs + `All security checks` gate — byte-identical to the org template, drift-enforced, DO NOT edit locally |
 | `check-template-drift.yml` | Fails CI when drift-governed files diverge from `netresearch/.github/templates/typo3-extension/` |
 | `release.yml` | Tag-triggered GitHub release + TER publish; tags have NO `v` prefix (e.g. `14.0.0`) — intentional-drift |
@@ -61,7 +61,7 @@ jobs:
     permissions:
       contents: read
     with:
-      php-versions: '["8.2","8.3","8.4","8.5"]'
+      php-versions: '["8.2","8.3","8.4","8.5","8.6"]'
       typo3-versions: '["^13.4","^14.3"]'
       typo3-packages: '["typo3/cms-core","typo3/cms-seo"]'
 ```
