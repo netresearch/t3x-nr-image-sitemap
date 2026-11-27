@@ -24,6 +24,7 @@ TYPO3 extension `nr_image_sitemap` (`netresearch/nr-image-sitemap`): an image-si
 | Unit tests | `composer ci:test:php:unit` |
 | Functional tests | `composer ci:test:php:functional` (needs a database; CI runs these in the reusable matrix) |
 | Everything | `composer ci:test` |
+| Changelog fragments | `composer ci:test:changelog` |
 <!-- AGENTS-GENERATED:END commands -->
 
 > If commands fail, verify against `composer.json`/`Makefile` and update this table in the same PR.
@@ -121,8 +122,9 @@ docs/            → agent-facing docs: ARCHITECTURE.md, exec-plans/
 
 ## Changelog
 
-- Changes are recorded in [`CHANGELOG.md`](CHANGELOG.md), newest first: `# X.Y.Z`, an optional one-line summary, then `## BREAKING`, `## Security`, `## FEATURE`, `## Fixes` (older sections: `## BUGFIX`), `## TASK`, `## Other changes` (older: `## MISC`) as needed and `## Contributors`. There is no `Unreleased` section.
-- The release PR `chore(release): X.Y.Z` writes the version's section; feature and fix PRs leave the file alone.
+- Changes are recorded in [`CHANGELOG.md`](CHANGELOG.md), [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/) from the release after 14.0.3 on: `## [X.Y.Z] - YYYY-MM-DD` with `### Added`, `### Changed`, `### Deprecated`, `### Removed`, `### Fixed`, `### Security` as needed, newest first, below `## [Unreleased]`. Releases up to 14.0.3 keep their original format (`# X.Y.Z` with `## FEATURE`, `## Fixes` and the like) below.
+- A feature or fix PR writes its entry as a fragment `changelog.d/<branch-slug>.<section>.md` ([format](changelog.d/README.md)) instead of editing `CHANGELOG.md`; `composer ci:test:changelog` checks it, and CI runs it through `composer ci:test:php:cgl`.
+- The release PR `chore(release): X.Y.Z` runs `composer changelog:collect`, which moves the fragments into `## [Unreleased]`, and then renames that section to `## [X.Y.Z] - YYYY-MM-DD`.
 
 ## Scoped AGENTS.md (MUST read when working in these directories)
 <!-- AGENTS-GENERATED:START scope-index -->
